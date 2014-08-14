@@ -1,0 +1,123 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BackUpWordPress\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-16 20:53-0300\n"
+"PO-Revision-Date: 2013-05-16 20:53-0300\n"
+"Last-Translator: Human Made Limited <support@hmn.md>\n"
+"Language-Team: Human Made Limited <support@humanmade.co.uk>\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../backupwordpress-pro-s3.php:55
+#, php-format
+msgid ""
+"BackupWordPress To Amazon S3 depends on <a href=\"%s\">BackUpWordPress</a> "
+"to work! It was deactivated"
+msgstr ""
+
+#: ../backupwordpress-pro-s3.php:95
+#, php-format
+msgid "BackUpWordPress Pro requires PHP version %s or greater."
+msgstr ""
+
+#: ../backupwordpress-pro-s3.php:103
+#, php-format
+msgid "BackUpWordPress requires WordPress version %s or greater."
+msgstr ""
+
+#: ../backupwordpress-pro-s3.php:202
+msgid "Destinations"
+msgstr ""
+
+#: ../destination-tabs.php:5
+msgid "Send a copy of your backups offsite"
+msgstr ""
+
+#: ../destination-tabs.php:7
+msgid ""
+"A copy of each backup will be uploaded to each of the destinations you setup "
+"below, you can specific multiple destinations."
+msgstr ""
+
+#: ../destination-tabs.php:48
+msgid "Update"
+msgstr ""
+
+#: ../s3/s3.php:46
+msgid "Uploading to Amazon S3"
+msgstr ""
+
+#: ../s3/s3.php:64
+msgid "Something went wrong while transferring your backup to Amazon S3"
+msgstr ""
+
+#: ../s3/s3.php:69
+#, php-format
+msgid "Could not connect to %s"
+msgstr ""
+
+#: ../s3/s3.php:113
+msgid "Send a copy of backups to Amazon S3"
+msgstr ""
+
+#: ../s3/s3.php:117
+msgid ""
+"Send a copy of all backups to Amazon S3. Backups will alwats be sent to S3 "
+"regardless of the maximum number of backups option."
+msgstr ""
+
+#: ../s3/s3.php:123
+msgid "Bucket Name"
+msgstr ""
+
+#: ../s3/s3.php:127
+msgid "The name of the S3 bucket you would like the backups to be uploaded to."
+msgstr ""
+
+#: ../s3/s3.php:133
+msgid "Access Key"
+msgstr ""
+
+#: ../s3/s3.php:140
+msgid "Secret Key"
+msgstr ""
+
+#: ../s3/s3.php:154
+msgid "Your Amazon S3 Access Key"
+msgstr ""
+
+#: ../s3/s3.php:154 ../s3/s3.php:156
+msgid "e.g."
+msgstr ""
+
+#: ../s3/s3.php:156
+msgid "Your Amazon S3 Secret Key"
+msgstr ""
+
+#: ../s3/s3.php:179
+msgid "You need to enter the S3 bucket"
+msgstr ""
+
+#: ../s3/s3.php:186
+msgid "You need to enter the S3 access key"
+msgstr ""
+
+#: ../s3/s3.php:193
+msgid "You need to enter the S3 secret key"
+msgstr ""
+
+#: ../s3/s3.php:203
+msgid "Could not connect to S3"
+msgstr ""
+
+#: ../s3/s3.php:218
+msgid "Send a copy of each backup to Amazon S3"
+msgstr ""

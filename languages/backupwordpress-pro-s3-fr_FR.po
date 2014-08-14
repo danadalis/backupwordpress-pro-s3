@@ -1,0 +1,186 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BackUpWordPress To Amazon S3 v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-02-25 12:56:38+0000\n"
+"Last-Translator: paul <paul@hmn.md>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: admin/admin.php:29
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "%1$sBackUpWordPress to Amazon S3 is almost ready%2$s, %3$senter your License Key to continue%4$s"
+msgstr ""
+
+#: admin/admin.php:41
+#@ backupwordpress-pro-s3
+msgid "Save License Key"
+msgstr ""
+
+#: admin/admin.php:49
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "%1$sDon't have a BackUpWordPress to Amazon S3 License Key?%2$s %3$sPurchase one now%4$s and then report back here"
+msgstr ""
+
+#: admin/admin.php:81
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "%1$sBackUpWordPress to Amazon S3 License Key successfully added%2$s, go back to %3$sthe backups admin page%4$s"
+msgstr ""
+
+#: admin/admin.php:91
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "%1$sBackUpWordPress to Amazon S3 License Key is invalid%2$s, plugin will be deactivated"
+msgstr ""
+
+#: backupwordpress-pro-s3.php:59
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "%1%sBackupWordPress to Amazon S3 depends on %2$sBackUpWordPress%3$s to work! It was deactivated"
+msgstr ""
+
+#: backupwordpress-pro-s3.php:121
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "BackUpWordPress to Amazon S3 requires PHP version %s or greater."
+msgstr ""
+
+#: backupwordpress-pro-s3.php:127
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "BackUpWordPress to Amazon S3 requires WordPress version %s or greater."
+msgstr ""
+
+#: backupwordpress-pro-s3.php:222
+#@ backupwordpress-pro-s3
+msgid "Destinations"
+msgstr ""
+
+#: destination-tabs.php:5
+#@ backupwordpress-pro-s3
+msgid "Send a copy of your backups offsite"
+msgstr ""
+
+#: destination-tabs.php:7
+#@ backupwordpress-pro-s3
+msgid "A copy of each backup will be uploaded to each of the destinations you setup below, old backups are not automatically deleted from remote services."
+msgstr ""
+
+#: destination-tabs.php:57
+#@ backupwordpress-pro-s3
+msgid "Close"
+msgstr ""
+
+#: destination-tabs.php:59
+#@ backupwordpress-pro-s3
+msgid "Save"
+msgstr ""
+
+#: s3/s3.php:66
+#@ backupwordpress-pro-s3
+msgid "Uploading to Amazon S3"
+msgstr ""
+
+#: s3/s3.php:73
+#, php-format
+#@ backupwordpress-pro-s3
+msgid "Could not connect to %s"
+msgstr ""
+
+#: s3/s3.php:216
+#@ backupwordpress-pro-s3
+msgid "Send a copy of each backup to Amazon S3"
+msgstr ""
+
+#: s3/s3.php:224
+#@ backupwordpress-pro-s3
+msgid "Access Key"
+msgstr ""
+
+#: s3/s3.php:231
+#@ backupwordpress-pro-s3
+msgid "Secret Key"
+msgstr ""
+
+#: s3/s3.php:239
+#@ backupwordpress-pro-s3
+msgid "Bucket"
+msgstr ""
+
+#: s3/s3.php:243
+#@ backupwordpress-pro-s3
+msgid "The Bucket to save the backups to, you'll need to create it first."
+msgstr ""
+
+#: s3/s3.php:249
+#@ backupwordpress-pro-s3
+msgid "Max backups"
+msgstr ""
+
+#: s3/s3.php:253
+#@ backupwordpress-pro-s3
+msgid "The maximum number of backups to store."
+msgstr ""
+
+#: s3/s3.php:271
+#@ backupwordpress-pro-s3
+msgid "Your Amazon S3 Access Key"
+msgstr ""
+
+#: s3/s3.php:273
+#: s3/s3.php:279
+#@ backupwordpress-pro-s3
+msgid "e.g."
+msgstr ""
+
+#: s3/s3.php:277
+#@ backupwordpress-pro-s3
+msgid "Your Amazon S3 Secret Key"
+msgstr ""
+
+#: s3/s3.php:308
+#@ backupwordpress-pro-s3
+msgid "You need to enter the S3 bucket"
+msgstr ""
+
+#: s3/s3.php:315
+#@ backupwordpress-pro-s3
+msgid "You need to enter the S3 access key"
+msgstr ""
+
+#: s3/s3.php:322
+#@ backupwordpress-pro-s3
+msgid "You need to enter the S3 secret key"
+msgstr ""
+
+#: s3/s3.php:327
+#@ backupwordpress-pro-s3
+msgid "Max backups must be a number"
+msgstr ""
+
+#: s3/s3.php:335
+#@ backupwordpress-pro-s3
+msgid "Could not connect to S3"
+msgstr ""
+
+#: s3/s3.php:342
+#@ backupwordpress-pro-s3
+msgid "Bucket does not exist"
+msgstr ""
+
