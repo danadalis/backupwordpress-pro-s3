@@ -21,6 +21,13 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	public $name = 'S3';
 
 	/**
+	 * Whether to show this service in the tabbed interface of destinations
+	 *
+	 * @var boolean
+	 */
+	public $is_tab_visible = true;
+
+	/**
 	 * Instance of the S3 SDK class.
 	 *
 	 * @var null
@@ -210,100 +217,87 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		?>
 
-		<table class="form-table">
-			<tbody>
-				<tr>
-					<th>
-						<label for="<?php echo $this->get_field_name( 'S3' ); ?>"><?php _e( 'Send a copy of each backup to Amazon S3', 'backupwordpress-pro-s3' ); ?></label>
-					</th>
+		<div>
 
-					<td>
-						<input type="checkbox" <?php checked( $this->get_field_value( 'S3' ) ) ?> id="<?php echo $this->get_field_name( 'S3' ); ?>" name="<?php echo $this->get_field_name( 'S3' ); ?>" value="1" />
-					</td>
-				</tr>
+			<label for="<?php echo $this->get_field_name( 'S3' ); ?>"><?php _e( 'Send a copy of each backup to Amazon S3', 'backupwordpress-pro-s3' ); ?></label>
 
-				<tr>
-					<th>
-						<label for="<?php echo $this->get_field_name( 'access_key' ); ?>"><?php _e( 'Access Key', 'backupwordpress-pro-s3' ); ?></label>
-					</th>
+			<input type="checkbox" <?php checked( $this->get_field_value( 'S3' ) ) ?> id="<?php echo $this->get_field_name( 'S3' ); ?>" name="<?php echo $this->get_field_name( 'S3' ); ?>" value="1" />
 
-					<td>
-						<input type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>" />
+		</div>
 
-						<p class="description">Find your credentials here: <a href="https://console.aws.amazon.com/iam/home?#security_credential">AWS console</a></p>
-					</td>
-				</tr>
+		<div>
 
-				<tr>
-					<th>
-						<label for="<?php echo $this->get_field_name( 'secret_key' ); ?>"><?php _e( 'Secret Key', 'backupwordpress-pro-s3' ); ?></label>
-					</th>
-					<td>
-						<input type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>" />
-					</td>
-				</tr>
+			<label for="<?php echo $this->get_field_name( 'access_key' ); ?>"><?php _e( 'Access Key', 'backupwordpress-pro-s3' ); ?></label>
 
-				<tr>
-					<th>
-						<label for="<?php echo $this->get_field_name( 'bucket' ); ?>"><?php _e( 'Bucket', 'backupwordpress-pro-s3' ); ?></label>
-					</th>
-					<td>
-						<input type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
+			<input type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>" />
 
-						<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress-pro-s3' ); ?></p>
-					</td>
-				</tr>
+			<p class="description">Find your credentials here: <a href="https://console.aws.amazon.com/iam/home?#security_credential">AWS console</a></p>
 
-				<tr>
-					<th>
-						<label for="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>"><?php _e( 'Region', 'backupwordpress-pro-s3' ); ?></label>
-					</th>
-					
-					<td>
-					<?php
+		</div>
 
-					$region = $this->get_field_value( 'aws_region' );
-					
-					// set a default value if none is set
-					if ( empty( $region ) )
-						$region = 'us-east-1';
+		<div>
 
-					?>
+			<label for="<?php echo $this->get_field_name( 'secret_key' ); ?>"><?php _e( 'Secret Key', 'backupwordpress-pro-s3' ); ?></label>
 
-						<select name="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>" id="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>">
+			<input type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>" />
 
-							<option <?php selected( $region, 'us-east-1' ); ?> value="us-east-1"><?php _e( 'US Standard', 'backupwordpress-pro-s3' ); ?></option>
+		</div>
 
-							<option <?php selected( $region, 'us-west-2' ); ?> value="us-west-2"><?php _e( 'US West (Oregon) Region', 'backupwordpress-pro-s3' ); ?></option>
+		<div>
 
-							<option <?php selected( $region, 'us-west-1' ); ?> value="us-west-1"><?php _e( 'US West (Northern California) Region', 'backupwordpress-pro-s3' ); ?></option>
+			<label for="<?php echo $this->get_field_name( 'bucket' ); ?>"><?php _e( 'Bucket', 'backupwordpress-pro-s3' ); ?></label>
 
-							<option <?php selected( $region, 'eu-west-1' ); ?> value="eu-west-1"><?php _e( 'EU (Ireland) Region', 'backupwordpress-pro-s3' ); ?></option>
+			<input type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
 
-							<option <?php selected( $region, 'ap-southeast-1' ); ?> value="ap-southeast-1"><?php _e( 'Asia Pacific (Singapore) Region', 'backupwordpress-pro-s3' ); ?></option>
+			<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress-pro-s3' ); ?></p>
 
-							<option <?php selected( $region, 'ap-southeast-2' ); ?> value="ap-southeast-2"><?php _e( 'Asia Pacific (Sydney) Region', 'backupwordpress-pro-s3' ); ?></option>
+		</div>
 
-							<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress-pro-s3' ); ?></option>
+		<div>
 
-							<option <?php selected( $region, 'sa-east-1' ); ?> value="sa-east-1"><?php _e( 'South America (Sao Paulo) Region', 'backupwordpress-pro-s3' ); ?></option>
+			<label for="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>"><?php _e( 'Region', 'backupwordpress-pro-s3' ); ?></label>
 
-						</select>
-					</td>
-				</tr>
+			<?php
 
-				<tr>
-					<th>
-						<label for="<?php echo $this->get_field_name( 's3_max_backups' ); ?>"><?php _e( 'Max backups', 'backupwordpress-pro-s3' ); ?></label>
-					</th>
-					<td>
-						<input type="number" min="1" step="1" id="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" name="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" value="<?php echo ( empty( $max_backups ) ? 3 : $max_backups ); ?>" />
+			$region = $this->get_field_value( 'aws_region' );
+			
+			// set a default value if none is set
+			if ( empty( $region ) )
+				$region = 'us-east-1';
 
-						<p class="description"><?php _e( 'The maximum number of backups to store.', 'backupwordpress-pro-s3' ); ?></p>
-					</td>
-				</tr>
-			</tbody>	
-		</table>
+			?>
+
+			<select name="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>" id="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>">
+
+				<option <?php selected( $region, 'us-east-1' ); ?> value="us-east-1"><?php _e( 'US Standard', 'backupwordpress-pro-s3' ); ?></option>
+
+				<option <?php selected( $region, 'us-west-2' ); ?> value="us-west-2"><?php _e( 'US West (Oregon) Region', 'backupwordpress-pro-s3' ); ?></option>
+
+				<option <?php selected( $region, 'us-west-1' ); ?> value="us-west-1"><?php _e( 'US West (Northern California) Region', 'backupwordpress-pro-s3' ); ?></option>
+
+				<option <?php selected( $region, 'eu-west-1' ); ?> value="eu-west-1"><?php _e( 'EU (Ireland) Region', 'backupwordpress-pro-s3' ); ?></option>
+
+				<option <?php selected( $region, 'ap-southeast-1' ); ?> value="ap-southeast-1"><?php _e( 'Asia Pacific (Singapore) Region', 'backupwordpress-pro-s3' ); ?></option>
+
+				<option <?php selected( $region, 'ap-southeast-2' ); ?> value="ap-southeast-2"><?php _e( 'Asia Pacific (Sydney) Region', 'backupwordpress-pro-s3' ); ?></option>
+
+				<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress-pro-s3' ); ?></option>
+
+				<option <?php selected( $region, 'sa-east-1' ); ?> value="sa-east-1"><?php _e( 'South America (Sao Paulo) Region', 'backupwordpress-pro-s3' ); ?></option>
+
+			</select>
+
+		</div>
+
+		<div>
+
+			<label for="<?php echo $this->get_field_name( 's3_max_backups' ); ?>"><?php _e( 'Max backups', 'backupwordpress-pro-s3' ); ?></label>
+
+			<input type="number" min="1" step="1" id="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" name="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" value="<?php echo ( empty( $max_backups ) ? 3 : $max_backups ); ?>" />
+
+			<p class="description"><?php _e( 'The maximum number of backups to store.', 'backupwordpress-pro-s3' ); ?></p>
+
+		</div>
 
 		<input type="hidden" name="is_destination_form" value="1" />
 
