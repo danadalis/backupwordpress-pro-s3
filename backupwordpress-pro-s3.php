@@ -4,7 +4,7 @@ Plugin Name: BackUpWordPress To Amazon S3
 Plugin URI: https://bwp.hmn.md/downloads/backupwordpress-to-amazon-s3/
 Description: Send your backups to your Amazon S3 account
 Author: Human Made Limited
-Version: 1.0.7
+Version: 1.0.8
 Author URI: https://bwp.hmn.md/
 license: GPLv2
 */
@@ -133,7 +133,7 @@ function hmbkp_aws_plugin_setup() {
 	define( 'HMBKPP_AWS_ADDON_NAME', 'BackUpWordPress To Amazon S3' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
 	if ( ! defined( 'HMBKP_S3_PLUGIN_VERSION' ) ) {
-		define( 'HMBKP_S3_PLUGIN_VERSION', '1.0.7' );
+		define( 'HMBKP_S3_PLUGIN_VERSION', '1.0.8' );
 	}
 
 	if ( ! class_exists( 'HMBKPP_SL_Plugin_Updater' ) ) {
