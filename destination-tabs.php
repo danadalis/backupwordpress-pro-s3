@@ -7,7 +7,7 @@ $services = HMBKP_Services::get_services( $schedule ); ?>
 
 	<legend><?php _e( 'Send a copy of your backups offsite', 'backupwordpress-pro-s3' ); ?></legend>
 
-	<span class="howto"><?php _e( 'A copy of each backup will be uploaded to each of the destinations you setup below, old backups are not automatically deleted from remote services.', 'backupwordpress-pro-s3' ); ?></span>
+	<span class="howto"><?php _e( 'A copy of each backup will be uploaded to each of the destinations you setup below.', 'backupwordpress-pro-s3' ); ?></span>
 
 	<div class="hmbkp-tabs">
 
