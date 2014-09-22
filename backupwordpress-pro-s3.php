@@ -93,8 +93,6 @@ function hmbkpp_aws_init() {
 
 	} else {
 
-		hmbkpp_aws_admin();
-
 		include_once HMBKP_S3_PLUGIN_PATH . 's3/s3.php';
 
 	}
@@ -156,6 +154,10 @@ function hmbkp_aws_plugin_setup() {
 
 	// loads the translation files
 	hmbkp_aws_plugin_textdomain();
+
+	if ( is_admin() ) {
+		hmbkpp_aws_admin();
+	}
 }
 add_action( 'plugins_loaded', 'hmbkp_aws_plugin_setup' );
 
