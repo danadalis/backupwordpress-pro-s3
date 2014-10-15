@@ -91,10 +91,6 @@ function hmbkpp_aws_init() {
 		deactivate_plugins( trailingslashit( basename( dirname( __FILE__ ) ) ) . basename( __FILE__ ) );
 		wp_die( sprintf( __( 'BackUpWordPress to Amazon S3 requires WordPress version %s or greater.', 'backupwordpress-pro-s3' ), HMBKP_S3_REQUIRED_WP_VERSION ), __( 'BackUpWordPress to Amazon S3', 'backupwordpress-pro-s3' ), array( 'back_link' => true ) );
 
-	} else {
-
-		include_once HMBKP_S3_PLUGIN_PATH . 's3/s3.php';
-
 	}
 
 }
@@ -127,7 +123,7 @@ function hmbkp_aws_plugin_setup() {
 	// this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
 	define( 'HMBKPP_AWS_STORE_URL', 'https://bwp.hmn.md' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
-// the name of your product. This should match the download name in EDD exactly
+	// the name of your product. This should match the download name in EDD exactly
 	define( 'HMBKPP_AWS_ADDON_NAME', 'BackUpWordPress To Amazon S3' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
 	if ( ! defined( 'HMBKP_S3_PLUGIN_VERSION' ) ) {
@@ -148,7 +144,7 @@ function hmbkp_aws_plugin_setup() {
 			'version'   => HMBKP_S3_PLUGIN_VERSION,                // current version number
 			'license'   => $license_key,        // license key (used get_option above to retrieve from DB)
 			'item_name' => HMBKPP_AWS_ADDON_NAME,    // name of this plugin
-			'author'    => 'Human Made Limited'  // author of this plugin
+			'author'    => 'Human Made Limited',  // author of this plugin
 		)
 	);
 
@@ -158,6 +154,8 @@ function hmbkp_aws_plugin_setup() {
 	if ( is_admin() ) {
 		hmbkpp_aws_admin();
 	}
+
+	require_once HMBKP_S3_PLUGIN_PATH . 's3/s3.php';
 }
 add_action( 'plugins_loaded', 'hmbkp_aws_plugin_setup' );
 
