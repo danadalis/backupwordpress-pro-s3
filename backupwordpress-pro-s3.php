@@ -155,7 +155,8 @@ function hmbkp_aws_plugin_setup() {
 		hmbkpp_aws_admin();
 	}
 
-	require_once HMBKP_S3_PLUGIN_PATH . 's3/s3.php';
+	if ( class_exists( 'HMBKP_Service' ) )
+		require_once HMBKP_S3_PLUGIN_PATH . 's3/s3.php';
 }
 add_action( 'plugins_loaded', 'hmbkp_aws_plugin_setup' );
 
