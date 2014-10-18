@@ -83,12 +83,13 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 	protected function upload_backup( $file, $bucket ) {
 
-		$filename = pathinfo( $file, PATHINFO_BASENAME );
+		$bucket_parts = $this->parse_bucket_name( $bucket );
+		$filename = $bucket_parts['prefix'] . pathinfo( $file, PATHINFO_BASENAME );
 
 		// Upload an object by streaming the contents of a file
 		// $pathToFile should be absolute path to a file on disk
 		$result = $this->s3->putObject(array(
-				'Bucket'     => $bucket,
+				'Bucket'     => $bucket_parts['bucket'],
 				'Key'        => $filename,
 				'SourceFile' => $file,
 				'Metadata'   => array(
@@ -99,7 +100,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		// We can poll the object until it is accessible
 		$this->s3->waitUntilObjectExists(array(
-				'Bucket' => $bucket,
+				'Bucket' => $bucket_parts['bucket'],
 				'Key'    => $filename
 			));
 
@@ -115,9 +116,11 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		// get max backups number
 		$max_backups = absint( $this->get_field_value( 's3_max_backups' ) );
 
+		$bucket = $this->parse_bucket_name( $bucket );
 		// get list of existing remote backups
 		$iterator = $this->s3->getIterator('ListObjects', array(
-				'Bucket' => $bucket
+				'Bucket' => $bucket['bucket'],
+				'Prefix' => $bucket['prefix']
 			));
 
 		$response = $iterator->toArray();
@@ -133,11 +136,18 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		$files_to_delete = array_slice( $backup_files, $max_backups );
 
-		foreach ( $files_to_delete as $filename )
+		foreach ( $files_to_delete as $filename ) {
+
+			try {
 			$response = $this->s3->deleteObject( array(
-					'Bucket' => $bucket,
+					'Bucket' => $bucket['bucket'],
 					'Key'    => $filename
 				) );
+			} catch( Exception $e ) {
+				trigger_error( 'Failed to delete file from S3: ' . $e->getMessage() );
+			}
+
+		}
 
 	}
 
@@ -180,7 +190,24 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 				'secret' => $secret,
 				'region' => $region
 			) );
+	}
 
+	/**
+	 * Parse a bucket name to split out the key prefix and bucket ID
+	 *
+	 * @param  string $bucket
+	 * @return array [bucket => string, prefix => string]
+	 */
+	protected function parse_bucket_name( $bucket ) {
+
+		if ( ! $pos = strpos( $bucket, '/' ) ) {
+			return array( 'bucket' => $bucket, 'prefix' => '' );
+		}
+
+		return array(
+			'bucket' => substr( $bucket, 0, $pos ),
+			'prefix' => substr( $bucket, $pos + 1 ) . '/'
+		);
 	}
 
 	/**
