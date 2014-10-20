@@ -155,8 +155,9 @@ function hmbkp_aws_plugin_setup() {
 		hmbkpp_aws_admin();
 	}
 
-	if ( class_exists( 'HMBKP_Service' ) )
+	if ( class_exists( 'HMBKP_Service' ) ) {
 		require_once HMBKP_S3_PLUGIN_PATH . 's3/s3.php';
+	}
 }
 add_action( 'plugins_loaded', 'hmbkp_aws_plugin_setup' );
 
@@ -169,7 +170,7 @@ function hmbkp_aws_get_manage_cap() {
 
 	static $manage_cap;
 
-	if ( ! empty ( $manage_cap ) ) {
+	if ( ! empty( $manage_cap ) ) {
 		return $manage_cap;
 	}
 
@@ -204,45 +205,7 @@ function hmbkp_aws_plugin_textdomain() {
 	/** Translations: Secondly, look in plugin's "languages" folder = default */
 	load_plugin_textdomain( $textdomain, false, HMBKP_S3_PLUGIN_LANG_DIR );
 
-} // end plugin_textdomain
-
-/**
- * Append the Destinations menu item to the schedule actions menu
- *
- * @param $output
- * @param $schedule
- *
- * @return string
- */
-function hmbkp_aws_append_destination_action( $output, $schedule ) {
-
-	return $output .= sprintf(
-		'<a class="colorbox" href="%s">%s</a> | ',
-		add_query_arg( array( 'action'            => 'hmbkp_aws_edit_destination_load',
-		                      'hmbkp_schedule_id' => $schedule->get_id()
-			), admin_url( 'admin-ajax.php' ) ),
-		__( 'Destinations', 'backupwordpress-pro-s3' )
-	);
-
 }
-
-if ( ! has_filter( 'hmbkp_schedule_actions_menu' ) ) {
-	add_filter( 'hmbkp_schedule_actions_menu', 'hmbkp_aws_append_destination_action', 10, 2 );
-}
-
-/**
- * Displays the destinations tabs in a popup
- */
-function hmbkp_aws_edit_destination_load() {
-
-	$schedule = new HMBKP_Scheduled_Backup( sanitize_text_field( $_GET['hmbkp_schedule_id'] ) );
-
-	require 'destination-tabs.php';
-
-	die();
-
-}
-add_action( 'wp_ajax_hmbkp_aws_edit_destination_load', 'hmbkp_aws_edit_destination_load' );
 
 /**
  * Include the plugin settings form
@@ -275,7 +238,7 @@ function hmbkpp_aws_default_settings() {
 
 	$defaults = array(
 		'license_key'    => '',
-		'license_status' => ''
+		'license_status' => '',
 	);
 
 	return $defaults;
