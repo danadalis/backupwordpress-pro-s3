@@ -58,11 +58,15 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 				$secret = $this->get_field_value( 'secret_key' );
 
 			if ( defined( 'HMBKP_AWS_REGION' ) )
-				$region = HMBKP_AWS_ACCESS_KEY;
+				$region = HMBKP_AWS_REGION;
 			else
 				$region = $this->get_field_value( 'aws_region' );
 
-			$bucket = $this->get_field_value( 'bucket' );
+			if ( defined( 'HMBKP_AWS_BUCKET' ) ) {
+				$bucket = HMBKP_AWS_BUCKET;
+			} else {
+				$bucket = $this->get_field_value( 'bucket' );
+			}
 
 			$this->fetch_s3_connection( $key, $secret, $region );
 
@@ -215,7 +219,12 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 */
 	public function form() {
 
-		$bucket = $this->get_field_value( 'bucket' );
+		if ( defined( 'HMBKP_AWS_BUCKET' ) ) {
+			$bucket = HMBKP_AWS_BUCKET;
+		} else {
+			$bucket = $this->get_field_value( 'bucket' );
+		}
+		
 
 		if ( empty( $bucket ) ) {
 
@@ -227,12 +236,22 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		}
 
-		$access_key = $this->get_field_value( 'access_key' );
+		if ( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) {
+			$access_key = HMBKP_AWS_ACCESS_KEY;
+		} else {
+			$access_key = $this->get_field_value( 'access_key' );
+		}
 
 		if ( empty( $access_key ) && ( isset( $options['access_key'] ) ) )
 			$access_key =  $options['access_key'];
 
-		$secret_key = $this->get_field_value( 'secret_key' );
+		if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) {
+			// this is meant to be a string, to show it's using the constant. 
+			// We don't want to output the constant value (secret)
+			$secret_key = 'HMBKP_AWS_SECRET_KEY';
+		} else {
+			$secret_key = $this->get_field_value( 'secret_key' );
+		}
 
 		if ( empty( $secret_key ) && ( isset( $options['secret_key'] ) ) )
 			$secret_key =  $options['secret_key'];
@@ -247,7 +266,6 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		<div>
 
 			<label for="<?php echo $this->get_field_name( 'S3' ); ?>"><?php _e( 'Send a copy of each backup to Amazon S3', 'backupwordpress-pro-s3' ); ?></label>
-
 			<input type="checkbox" <?php checked( $this->get_field_value( 'S3' ) ) ?> id="<?php echo $this->get_field_name( 'S3' ); ?>" name="<?php echo $this->get_field_name( 'S3' ); ?>" value="1" />
 
 		</div>
@@ -256,7 +274,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<label for="<?php echo $this->get_field_name( 'access_key' ); ?>"><?php _e( 'Access Key', 'backupwordpress-pro-s3' ); ?></label>
 
-			<input type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>" />
+			<input <?php disabled( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>" />
 
 			<p class="description">Find your credentials here: <a href="https://console.aws.amazon.com/iam/home?#security_credential">AWS console</a></p>
 
@@ -266,7 +284,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<label for="<?php echo $this->get_field_name( 'secret_key' ); ?>"><?php _e( 'Secret Key', 'backupwordpress-pro-s3' ); ?></label>
 
-			<input type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>" />
+			<input <?php disabled( defined( 'HMBKP_AWS_SECRET_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>" />
 
 		</div>
 
@@ -274,7 +292,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<label for="<?php echo $this->get_field_name( 'bucket' ); ?>"><?php _e( 'Bucket', 'backupwordpress-pro-s3' ); ?></label>
 
-			<input type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
+			<input <?php disabled( defined( 'HMBKP_AWS_BUCKET' ) ) ?> type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
 
 			<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress-pro-s3' ); ?></p>
 
@@ -283,7 +301,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		<div>
 
 			<label for="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>"><?php _e( 'Region', 'backupwordpress-pro-s3' ); ?></label>
-
+					
 			<?php
 
 			$region = $this->get_field_value( 'aws_region' );
