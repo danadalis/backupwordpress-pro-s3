@@ -58,14 +58,18 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 				$secret = HMBKP_AWS_SECRET_KEY;
 			} else {
 				$secret = $this->get_field_value( 'secret_key' );
-			}
-			if ( defined( 'HMBKP_AWS_REGION' ) ) {
-				$region = HMBKP_AWS_ACCESS_KEY;
-			} else {
+
+			if ( defined( 'HMBKP_AWS_REGION' ) )
+				$region = HMBKP_AWS_REGION;
+			else
 				$region = $this->get_field_value( 'aws_region' );
 			}
 
-			$bucket = $this->get_field_value( 'bucket' );
+			if ( defined( 'HMBKP_AWS_BUCKET' ) ) {
+				$bucket = HMBKP_AWS_BUCKET;
+			} else {
+				$bucket = $this->get_field_value( 'bucket' );
+			}
 
 			$this->fetch_s3_connection( $key, $secret, $region );
 
@@ -90,22 +94,27 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 */
 	protected function upload_backup( $file, $bucket ) {
 
-		$filename = pathinfo( $file, PATHINFO_BASENAME );
+		$bucket_parts = $this->parse_bucket_name( $bucket );
+		$filename = $bucket_parts['prefix'] . pathinfo( $file, PATHINFO_BASENAME );
 
 		// Upload an object by streaming the contents of a file
 		// $pathToFile should be absolute path to a file on disk
-		$result = $this->s3->putObject( array(
-			'Bucket'     => $bucket,
-			'Key'        => $filename,
-			'SourceFile' => $file,
-			'Metadata'   => array()
-		) );
+
+		$result = $this->s3->putObject(array(
+				'Bucket'     => $bucket_parts['bucket'],
+				'Key'        => $filename,
+				'SourceFile' => $file,
+				'Metadata'   => array(
+					'Foo' => 'abc',
+					'Baz' => '123'
+				)
+			));
 
 		// We can poll the object until it is accessible
-		$this->s3->waitUntilObjectExists( array(
-			'Bucket' => $bucket,
-			'Key'    => $filename,
-		) );
+		$this->s3->waitUntilObjectExists(array(
+				'Bucket' => $bucket_parts['bucket'],
+				'Key'    => $filename
+			));
 
 	}
 
@@ -119,10 +128,13 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		// get max backups number
 		$max_backups = absint( $this->get_field_value( 's3_max_backups' ) );
 
+		$bucket = $this->parse_bucket_name( $bucket );
 		// get list of existing remote backups
-		$iterator = $this->s3->getIterator( 'ListObjects', array(
-			'Bucket' => $bucket,
-		) );
+
+		$iterator = $this->s3->getIterator('ListObjects', array(
+				'Bucket' => $bucket['bucket'],
+				'Prefix' => $bucket['prefix']
+			));
 
 		$response = $iterator->toArray();
 
@@ -140,12 +152,18 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		foreach ( $files_to_delete as $filename ) {
 
+
+			try {
 			$response = $this->s3->deleteObject( array(
-				'Bucket' => $bucket,
-				'Key'    => $filename,
-			) );
+					'Bucket' => $bucket['bucket'],
+					'Key'    => $filename
+				) );
+			} catch( Exception $e ) {
+				trigger_error( 'Failed to delete file from S3: ' . $e->getMessage() );
+			}
 
 		}
+
 	}
 
 	/**
@@ -179,11 +197,28 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	function fetch_s3_connection( $key, $secret, $region = 'us-east-1' ) {
 
 		$this->s3 = S3Client::factory( array(
-			'key'    => $key,
-			'secret' => $secret,
-			'region' => $region,
-		) );
+				'key'    => $key,
+				'secret' => $secret,
+				'region' => $region
+			) );
+	}
 
+	/**
+	 * Parse a bucket name to split out the key prefix and bucket ID
+	 *
+	 * @param  string $bucket
+	 * @return array [bucket => string, prefix => string]
+	 */
+	protected function parse_bucket_name( $bucket ) {
+
+		if ( ! $pos = strpos( $bucket, '/' ) ) {
+			return array( 'bucket' => $bucket, 'prefix' => '' );
+		}
+
+		return array(
+			'bucket' => substr( $bucket, 0, $pos ),
+			'prefix' => substr( $bucket, $pos + 1 ) . '/'
+		);
 	}
 
 	/**
@@ -191,7 +226,11 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 */
 	public function form() {
 
-		$bucket = $this->get_field_value( 'bucket' );
+		if ( defined( 'HMBKP_AWS_BUCKET' ) ) {
+			$bucket = HMBKP_AWS_BUCKET;
+		} else {
+			$bucket = $this->get_field_value( 'bucket' );
+		}
 
 		if ( empty( $bucket ) ) {
 
@@ -202,13 +241,23 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 			}
 		}
 
-		$access_key = $this->get_field_value( 'access_key' );
+		if ( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) {
+			$access_key = HMBKP_AWS_ACCESS_KEY;
+		} else {
+			$access_key = $this->get_field_value( 'access_key' );
+		}
 
 		if ( empty( $access_key ) && ( isset( $options['access_key'] ) ) ) {
 			$access_key = $options['access_key'];
 		}
 
-		$secret_key = $this->get_field_value( 'secret_key' );
+		if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) {
+			// this is meant to be a string, to show it's using the constant. 
+			// We don't want to output the constant value (secret)
+			$secret_key = 'HMBKP_AWS_SECRET_KEY';
+		} else {
+			$secret_key = $this->get_field_value( 'secret_key' );
+		}
 
 		if ( empty( $secret_key ) && ( isset( $options['secret_key'] ) ) ) {
 			$secret_key = $options['secret_key'];
@@ -249,7 +298,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<td>
 
-			<input type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>"/>
+				<input <?php disabled( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>" />
 
 			<p class="description">Find your credentials here: <a href="https://console.aws.amazon.com/iam/home?#security_credential">AWS console</a></p>
 
@@ -267,7 +316,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<td>
 
-			<input type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>"/>
+				<input <?php disabled( defined( 'HMBKP_AWS_SECRET_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>" />
 
 			</td>
 
@@ -283,7 +332,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<td>
 
-			<input type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>"/>
+				<input <?php disabled( defined( 'HMBKP_AWS_BUCKET' ) ) ?> type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
 
 			<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress-pro-s3' ); ?></p>
 
