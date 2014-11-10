@@ -452,6 +452,9 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		</tr>
 
+		</tbody>
+		</table>
+
 	<?php
 	}
 
