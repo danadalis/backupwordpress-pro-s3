@@ -6,7 +6,8 @@ Description: Send your backups to your Amazon S3 account
 Author: Human Made Limited
 Version: 2.0
 Author URI: https://bwp.hmn.md/
-license: GPLv2
+License: GPLv2
+Network: true
 */
 
 /*
