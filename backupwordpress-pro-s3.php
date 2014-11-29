@@ -30,39 +30,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 defined( 'WPINC' ) or die;
 
-
-if ( ! defined( 'HMBKP_S3_REQUIRED_PHP_VERSION' ) ) {
-	define( 'HMBKP_S3_REQUIRED_PHP_VERSION', '5.3.1' );
-}
-
-// Don't activate on anything less than PHP required version
-if ( version_compare( phpversion(), HMBKP_S3_REQUIRED_PHP_VERSION, '<' ) ) {
-	deactivate_plugins( trailingslashit( basename( dirname( __FILE__ ) ) ) . basename( __FILE__ ) );
-	wp_die( sprintf( __( 'BackUpWordPress to Amazon S3 requires PHP version %s or greater.', 'backupwordpress-pro-s3' ), HMBKP_S3_REQUIRED_PHP_VERSION ), __( 'BackUpWordPress to Amazon S3', 'backupwordpress-pro-s3' ), array( 'back_link' => true ) );
-}
-
-
 function hmbkp_aws_activate() {
-
-	if ( ! defined( 'HMBKP_S3_REQUIRED_WP_VERSION' ) ) {
-		define( 'HMBKP_S3_REQUIRED_WP_VERSION', '3.8.4' );
-	}
-
 
 	if ( ! class_exists( 'HMBKP_Scheduled_Backup' ) ) {
 
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 
 		wp_die( __( 'BackUpWordPress To Amazon S3 requires BackUpWordPress to be activated. It has been deactivated.', 'backupwordpress-pro-gdrive' ), 'BackUpWordPress to Google Drive', array( 'back_link' => true ) );
-
-	}
-
-		// Don't activate on old versions of WordPress
-	global $wp_version;
-
-	if ( version_compare( $wp_version, HMBKP_S3_REQUIRED_WP_VERSION, '<' ) ) {
-		deactivate_plugins( trailingslashit( basename( dirname( __FILE__ ) ) ) . basename( __FILE__ ) );
-		wp_die( sprintf( __( 'BackUpWordPress to Amazon S3 requires WordPress version %s or greater.', 'backupwordpress-pro-s3' ), HMBKP_S3_REQUIRED_WP_VERSION ), __( 'BackUpWordPress to Amazon S3', 'backupwordpress-pro-s3' ), array( 'back_link' => true ) );
 
 	}
 
@@ -78,19 +52,6 @@ function hmbkpp_aws_init() {
 
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		wp_die( __( 'BackUpWordPress To Amazon S3 requires BackUpWordPress to be activated. It has been deactivated.', 'backupwordpress-pro-gdrive' ), 'BackUpWordPress to Google Drive', array( 'back_link' => true ) );
-
-	}
-
-	if ( ! defined( 'HMBKP_S3_REQUIRED_WP_VERSION' ) ) {
-		define( 'HMBKP_S3_REQUIRED_WP_VERSION', '3.8.4' );
-	}
-
-	// Don't activate on old versions of WordPress
-	global $wp_version;
-
-	if ( version_compare( $wp_version, HMBKP_S3_REQUIRED_WP_VERSION, '<' ) ) {
-		deactivate_plugins( trailingslashit( basename( dirname( __FILE__ ) ) ) . basename( __FILE__ ) );
-		wp_die( sprintf( __( 'BackUpWordPress to Amazon S3 requires WordPress version %s or greater.', 'backupwordpress-pro-s3' ), HMBKP_S3_REQUIRED_WP_VERSION ), __( 'BackUpWordPress to Amazon S3', 'backupwordpress-pro-s3' ), array( 'back_link' => true ) );
 
 	}
 
