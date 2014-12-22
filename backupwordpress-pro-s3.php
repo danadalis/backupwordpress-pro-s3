@@ -121,8 +121,7 @@ function hmbkp_aws_plugin_setup() {
 		require_once HMBKP_S3_PLUGIN_PATH . 's3/s3.php';
 	}
 }
-add_action( 'plugins_loaded', 'hmbkp_aws_plugin_setup' );
-
+add_action( 'backupwordpress_loaded', 'hmbkp_aws_plugin_setup' );
 
 /**
  * Sets default plugin cap level
