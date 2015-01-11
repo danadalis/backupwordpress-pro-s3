@@ -1,7 +1,7 @@
 <?php
 defined( 'WPINC' ) or die;
 
-require_once HMBKP_S3_PLUGIN_PATH . 'assets/vendor/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . '../assets/vendor/autoload.php';
 
 use Aws\S3\S3Client;
 use Aws\Common\Enum\Size;
@@ -570,7 +570,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 */
 	public static function intercom_data() {
 
-		require_once HMBKP_S3_PLUGIN_PATH . 'inc/class-requirements.php';
+		require_once plugin_dir_path( __FILE__ ) . '../inc/class-requirements.php';
 
 		$info = array();
 
@@ -586,7 +586,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 */
 	public static function intercom_data_html() {
 
-		require_once HMBKP_S3_PLUGIN_PATH . 'inc/class-requirements.php';
+		require_once plugin_dir_path( __FILE__ ) . '../inc/class-requirements.php';
 
 		?>
 
