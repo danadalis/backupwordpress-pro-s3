@@ -27,7 +27,7 @@ function hmbkpp_aws_display_license_form() { ?>
 
 				<?php
 				printf(
-					__( '%1$sBackUpWordPress to Amazon S3 is almost ready%2$s, %3$senter your License Key to continue%4$s', 'backupwordpress-pro-s3' ),
+					__( '%1$sBackUpWordPress to Amazon S3 is almost ready%2$s, %3$senter your License Key to continue%4$s', 'backupwordpress' ),
 					'<strong>',
 					'</strong>',
 					'<label style="vertical-align: baseline;" for="hmbkpp_aws_license_key">',
@@ -39,7 +39,7 @@ function hmbkpp_aws_display_license_form() { ?>
 
 				<input type="hidden" name="hmbkpp_aws_settings[hmbkpp-aws-settings-updated]" value="1" />
 
-				<input class="button-primary" type="submit" value="<?php _e( 'Save License Key', 'backupwordpress-pro-s3' ); ?>" />
+				<input class="button-primary" type="submit" value="<?php _e( 'Save License Key', 'backupwordpress' ); ?>" />
 
 			</p>
 
@@ -47,7 +47,7 @@ function hmbkpp_aws_display_license_form() { ?>
 
 				<?php
 				printf(
-					__( '%1$sDon\'t have a BackUpWordPress to Amazon S3 License Key?%2$s %3$sPurchase one now%4$s and then report back here', 'backupwordpress-pro-s3' ),
+					__( '%1$sDon\'t have a BackUpWordPress to Amazon S3 License Key?%2$s %3$sPurchase one now%4$s and then report back here', 'backupwordpress' ),
 					'<strong>',
 					'</strong>',
 					'<a href="' . esc_url( 'https://bwp.hmn.md' ) . '" target="_blank">',
@@ -79,17 +79,17 @@ function hmbkpp_aws_license_validity_notice( $license_status ) { ?>
 			<?php
 			if ( 'valid' == $license_status ) {
 				printf(
-					__( '%1$sBackUpWordPress to Amazon S3 License Key successfully added%2$s, go back to %3$sthe backups admin page%4$s' , 'backupwordpress-pro-s3' ),
+					__( '%1$sBackUpWordPress to Amazon S3 License Key successfully added%2$s, go back to %3$sthe backups admin page%4$s' , 'backupwordpress' ),
 					'<strong>',
 					'</strong>',
-					'<a href="tools.php?page=' . esc_attr( HMBKP_PLUGIN_SLUG ) . '">',
+					'<a href="' . esc_attr( HMBKP_ADMIN_URL ) . '">',
 					'</a>'
 				);
 			} else {
 				delete_option( 'hmbkpp_aws_settings' );
 				deactivate_plugins( 'backupwordpress-pro-s3/backupwordpress-pro-s3.php' );
 				printf(
-					__( '%1$sBackUpWordPress to Amazon S3 License Key is invalid%2$s, plugin will be deactivated' , 'backupwordpress-pro-s3' ),
+					__( '%1$sBackUpWordPress to Amazon S3 License Key is invalid%2$s, plugin will be deactivated' , 'backupwordpress' ),
 					'<strong>',
 					'</strong>'
 				);
@@ -147,11 +147,11 @@ function hmbkpp_aws_activate_license() {
 	$api_params = array(
 		'edd_action'=> 'activate_license',
 		'license' 	=> $license,
-		'item_name' => urlencode( HMBKPP_AWS_ADDON_NAME ) // the name of our product in EDD
+		'item_name' => urlencode( BackUpWordPress_S3::EDD_DOWNLOAD_FILE_NAME ) // the name of our product in EDD
 	);
 
 	// Call the custom API.
-	$response = wp_remote_get( add_query_arg( $api_params, HMBKPP_AWS_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+	$response = wp_remote_get( add_query_arg( $api_params, BackUpWordPress_S3::EDD_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
 
 	// make sure the response came back okay
 	if ( is_wp_error( $response ) )
@@ -183,11 +183,11 @@ function hmbkpp_aws_deactivate_license() {
 	$api_params = array(
 		'edd_action'=> 'deactivate_license',
 		'license' 	=> $license,
-		'item_name' => urlencode( HMBKPP_AWS_ADDON_NAME ) // the name of our product in EDD
+		'item_name' => urlencode( BackUpWordPress_S3::EDD_DOWNLOAD_FILE_NAME ) // the name of our product in EDD
 	);
 
 	// Call the custom API.
-	$response = wp_remote_get( add_query_arg( $api_params, HMBKPP_AWS_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+	$response = wp_remote_get( add_query_arg( $api_params, BackUpWordPress_S3::EDD_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
 
 	// make sure the response came back okay
 	if ( is_wp_error( $response ) )
@@ -227,11 +227,11 @@ function hmbkpp_aws_check_license() {
 	$api_params = array(
 		'edd_action' => 'check_license',
 		'license' => $license,
-		'item_name' => urlencode( HMBKPP_AWS_ADDON_NAME )
+		'item_name' => urlencode( BackUpWordPress_S3::EDD_DOWNLOAD_FILE_NAME )
 	);
 
 	// Call the custom API.
-	$response = wp_remote_get( add_query_arg( $api_params, HMBKPP_AWS_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+	$response = wp_remote_get( add_query_arg( $api_params, BackUpWordPress_S3::EDD_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
 
 	if ( is_wp_error( $response ) )
 		return false;

@@ -75,14 +75,14 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			if ( ! empty( $this->s3 ) ) {
 
-				$this->schedule->set_status( __( 'Uploading to Amazon S3', 'backupwordpress-pro-s3' ) );
+				$this->schedule->set_status( __( 'Uploading to Amazon S3', 'backupwordpress' ) );
 
 				$this->upload_backup( $file, $bucket );
 
 				$this->delete_old_backups( $bucket );
 
 			} else {
-				$this->schedule->error( 'S3', sprintf( __( 'Could not connect to %s', 'backupwordpress-pro-s3' ), $this->get_field_value( 'bucket' ) ) );
+				$this->schedule->error( 'S3', sprintf( __( 'Could not connect to %s', 'backupwordpress' ), $this->get_field_value( 'bucket' ) ) );
 			}
 		}
 
@@ -277,12 +277,12 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		<tr>
 
-			<th scope="row"><?php esc_html_e( 'Send a copy of each backup to Amazon S3', 'backupwordpress-pro-s3' ); ?></th>
+			<th scope="row"><?php esc_html_e( 'Send a copy of each backup to Amazon S3', 'backupwordpress' ); ?></th>
 
 			<td>
 				<label for="<?php echo $this->get_field_name( 'S3' ); ?>">
 
-					<input type="checkbox" <?php checked( $this->get_field_value( 'S3' ) ) ?> id="<?php echo $this->get_field_name( 'S3' ); ?>" name="<?php echo $this->get_field_name( 'S3' ); ?>" value="1"/><?php _e( 'Active', 'backupwordpress-pro-s3' ); ?>
+					<input type="checkbox" <?php checked( $this->get_field_value( 'S3' ) ) ?> id="<?php echo $this->get_field_name( 'S3' ); ?>" name="<?php echo $this->get_field_name( 'S3' ); ?>" value="1"/><?php _e( 'Active', 'backupwordpress' ); ?>
 				</label>
 			</td>
 
@@ -292,7 +292,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<th scope="row">
 
-			<label for="<?php echo $this->get_field_name( 'access_key' ); ?>"><?php _e( 'Access Key', 'backupwordpress-pro-s3' ); ?></label>
+			<label for="<?php echo $this->get_field_name( 'access_key' ); ?>"><?php _e( 'Access Key', 'backupwordpress' ); ?></label>
 
 			</th>
 
@@ -310,7 +310,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<th scope="row">
 
-			<label for="<?php echo $this->get_field_name( 'secret_key' ); ?>"><?php _e( 'Secret Key', 'backupwordpress-pro-s3' ); ?></label>
+			<label for="<?php echo $this->get_field_name( 'secret_key' ); ?>"><?php _e( 'Secret Key', 'backupwordpress' ); ?></label>
 
 			</th>
 
@@ -326,7 +326,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<th scope="row"">
 
-			<label for="<?php echo $this->get_field_name( 'bucket' ); ?>"><?php _e( 'Bucket', 'backupwordpress-pro-s3' ); ?></label>
+			<label for="<?php echo $this->get_field_name( 'bucket' ); ?>"><?php _e( 'Bucket', 'backupwordpress' ); ?></label>
 
 			</th>
 
@@ -334,7 +334,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 				<input <?php disabled( defined( 'HMBKP_AWS_BUCKET' ) ) ?> type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
 
-			<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress-pro-s3' ); ?></p>
+			<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress' ); ?></p>
 
 			</td>
 
@@ -344,7 +344,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<th scope="row">
 
-			<label for="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>"><?php _e( 'Region', 'backupwordpress-pro-s3' ); ?></label>
+			<label for="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>"><?php _e( 'Region', 'backupwordpress' ); ?></label>
 
 			</th>
 
@@ -363,22 +363,22 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<select name="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>" id="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>">
 
-				<option <?php selected( $region, 'us-east-1' ); ?> value="us-east-1"><?php _e( 'US Standard', 'backupwordpress-pro-s3' ); ?></option>
+				<option <?php selected( $region, 'us-east-1' ); ?> value="us-east-1"><?php _e( 'US Standard', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'us-west-2' ); ?> value="us-west-2"><?php _e( 'US West (Oregon) Region', 'backupwordpress-pro-s3' ); ?></option>
+				<option <?php selected( $region, 'us-west-2' ); ?> value="us-west-2"><?php _e( 'US West (Oregon) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'us-west-1' ); ?> value="us-west-1"><?php _e( 'US West (Northern California) Region', 'backupwordpress-pro-s3' ); ?></option>
+				<option <?php selected( $region, 'us-west-1' ); ?> value="us-west-1"><?php _e( 'US West (Northern California) Region', 'backupwordpress' ); ?></option>
 
 				<option <?php selected( $region, 'eu-west-1' ); ?>
-					value="eu-west-1"><?php _e( 'EU (Ireland) Region', 'backupwordpress-pro-s3' ); ?></option>
+					value="eu-west-1"><?php _e( 'EU (Ireland) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'ap-southeast-1' ); ?> value="ap-southeast-1"><?php _e( 'Asia Pacific (Singapore) Region', 'backupwordpress-pro-s3' ); ?></option>
+				<option <?php selected( $region, 'ap-southeast-1' ); ?> value="ap-southeast-1"><?php _e( 'Asia Pacific (Singapore) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'ap-southeast-2' ); ?> value="ap-southeast-2"><?php _e( 'Asia Pacific (Sydney) Region', 'backupwordpress-pro-s3' ); ?></option>
+				<option <?php selected( $region, 'ap-southeast-2' ); ?> value="ap-southeast-2"><?php _e( 'Asia Pacific (Sydney) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress-pro-s3' ); ?></option>
+				<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'sa-east-1' ); ?> value="sa-east-1"><?php _e( 'South America (Sao Paulo) Region', 'backupwordpress-pro-s3' ); ?></option>
+				<option <?php selected( $region, 'sa-east-1' ); ?> value="sa-east-1"><?php _e( 'South America (Sao Paulo) Region', 'backupwordpress' ); ?></option>
 
 			</select>
 
@@ -390,7 +390,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<th scope="row">
 
-			<label for="<?php echo $this->get_field_name( 's3_max_backups' ); ?>"><?php _e( 'Max backups', 'backupwordpress-pro-s3' ); ?></label>
+			<label for="<?php echo $this->get_field_name( 's3_max_backups' ); ?>"><?php _e( 'Max backups', 'backupwordpress' ); ?></label>
 
 			</th>
 
@@ -398,7 +398,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<input class="small-text" type="number" min="1" step="1" id="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" name="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" value="<?php echo( empty( $max_backups ) ? 3 : $max_backups ); ?>"/>
 
-			<p class="description"><?php _e( 'The maximum number of backups to store.', 'backupwordpress-pro-s3' ); ?></p>
+			<p class="description"><?php _e( 'The maximum number of backups to store.', 'backupwordpress' ); ?></p>
 
 			</td>
 
@@ -483,14 +483,14 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		if ( isset( $new_data['bucket'] ) ) {
 
 			if ( empty( $new_data['bucket'] ) ) {
-				$errors['bucket'] = __( 'You need to enter the S3 bucket', 'backupwordpress-pro-s3' );
+				$errors['bucket'] = __( 'You need to enter the S3 bucket', 'backupwordpress' );
 			}
 		}
 
 		if ( isset( $new_data['access_key'] ) ) {
 
 			if ( empty( $new_data['access_key'] ) ) {
-				$errors['access_key'] = __( 'You need to enter the S3 access key', 'backupwordpress-pro-s3' );
+				$errors['access_key'] = __( 'You need to enter the S3 access key', 'backupwordpress' );
 			}
 
 		}
@@ -498,19 +498,19 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		if ( isset( $new_data['secret_key'] ) ) {
 
 			if ( empty( $new_data['secret_key'] ) ) {
-				$errors['secret_key'] = __( 'You need to enter the S3 secret key', 'backupwordpress-pro-s3' );
+				$errors['secret_key'] = __( 'You need to enter the S3 secret key', 'backupwordpress' );
 			}
 		}
 
 		if ( isset( $new_data['aws_region'] ) ) {
 
 			if ( empty( $new_data['aws_region'] ) ) {
-				$errors['aws_region'] = __( 'You need to select a region', 'backupwordpress-pro-s3' );
+				$errors['aws_region'] = __( 'You need to select a region', 'backupwordpress' );
 			}
 		}
 
 		if ( empty( $new_data['s3_max_backups'] ) || ! ctype_digit( $new_data['s3_max_backups'] ) || absint( $new_data['s3_max_backups'] ) < 1 ) {
-			$errors['s3_max_backups'] = __( 'Max backups must be a number', 'backupwordpress-pro-s3' );
+			$errors['s3_max_backups'] = __( 'Max backups must be a number', 'backupwordpress' );
 		}
 
 		// Test that we can connect to S3
@@ -519,22 +519,22 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 			$this->fetch_s3_connection( $new_data['access_key'], $new_data['secret_key'], $new_data['aws_region'] );
 
 			if ( ! $this->s3 ) {
-				$errors['bucket'] = __( 'Could not connect to S3', 'backupwordpress-pro-s3' );
+				$errors['bucket'] = __( 'Could not connect to S3', 'backupwordpress' );
 			} else {
 				try {
 					$result = $this->s3->listBuckets( array() );
 				} catch ( Exception $e ) {
-					$errors['bucket'] = sprintf( __( '%s', 'backupwordpress-pro-s3' ), $e->getMessage() );
+					$errors['bucket'] = sprintf( __( '%s', 'backupwordpress' ), $e->getMessage() );
 				}
 				$buckets = '';
 				if ( isset( $result['Buckets'] ) ) {
 					$buckets = wp_list_pluck( $result['Buckets'], 'Name' );
 				} else {
-					$errors['bucket'] = __( 'No buckets retrieved', 'backupwordpress-pro-s3' );
+					$errors['bucket'] = __( 'No buckets retrieved', 'backupwordpress' );
 				}
 
 				if ( $buckets && ! in_array( $new_data['bucket'], $buckets ) ) {
-					$errors['bucket'] = __( 'Bucket does not exist', 'backupwordpress-pro-s3' );
+					$errors['bucket'] = __( 'Bucket does not exist', 'backupwordpress' );
 				}
 			}
 		}
@@ -551,7 +551,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	public function display() {
 
 		if ( $this->is_service_active() ) {
-			return __( $this->name, 'backupwordpress-pro-s3' );
+			return __( $this->name, 'backupwordpress' );
 		}
 
 	}
@@ -590,7 +590,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		?>
 
-		<h3><?php _e( 'Amazon', 'backupwordpress-pro-s3' ); ?></h3>
+		<h3><?php _e( 'Amazon', 'backupwordpress' ); ?></h3>
 
 		<table class="fixed widefat">
 
