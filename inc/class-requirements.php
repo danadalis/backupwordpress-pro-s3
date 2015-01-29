@@ -1,10 +1,12 @@
 <?php
-defined( 'WPINC' ) or die;
+namespace HM\BackUpWordPressS3;
+
+use HM\BackUpWordPress;
 
 /**
- * Class HMBKP_Requirement_Define_HMBKPP_AWS_LICENSE_STATUS
+ * Class Define_License_Status
  */
-class HMBKP_Requirement_Define_HMBKPP_AWS_LICENSE_STATUS extends HMBKP_Requirement {
+class Define_License_Status extends BackUpWordPress\Requirement {
 
 	var $name = 'License Status';
 
@@ -13,7 +15,7 @@ class HMBKP_Requirement_Define_HMBKPP_AWS_LICENSE_STATUS extends HMBKP_Requireme
 	 */
 	protected function test() {
 
-		$plugin = BackUpWordPress_S3::get_instance();
+		$plugin = Plugin::get_instance();
 		$settings = $plugin->fetch_settings();
 
 		return ( isset( $settings['license_status'] ) && 'valid' === $settings['license_status'] ) ? 'License is valid' : 'License is invalid or not set';
@@ -22,4 +24,4 @@ class HMBKP_Requirement_Define_HMBKPP_AWS_LICENSE_STATUS extends HMBKP_Requireme
 
 }
 
-HMBKP_Requirements::register( 'HMBKP_Requirement_Define_HMBKPP_AWS_LICENSE_STATUS', 'amazon' );
+BackUpWordPress\Requirements::register( 'HM\BackUpWordPressS3\Define_License_Status', 'amazon' );
