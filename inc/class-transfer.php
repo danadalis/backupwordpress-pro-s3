@@ -1,5 +1,7 @@
 <?php
-defined( 'WPINC' ) or die;
+namespace HM\BackUpWordPressS3;
+
+use HM\BackUpWordPress;
 
 require_once plugin_dir_path( __FILE__ ) . '../assets/vendor/autoload.php';
 
@@ -11,7 +13,7 @@ use Aws\S3\Model\MultipartUpload\UploadBuilder;
 /**
  * Class HMBKP_S3_Backup_Service
  */
-class HMBKP_S3_Backup_Service extends HMBKP_Service {
+class S3_Backup extends BackUpWordPress\Service {
 
 	/**
 	 * Human Friendly service name
@@ -19,13 +21,6 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 * @var string
 	 */
 	public $name = 'S3';
-
-	/**
-	 * Whether to show this service in the tabbed interface of destinations
-	 *
-	 * @var boolean
-	 */
-	public $is_tab_visible = true;
 
 	/**
 	 * Instance of the S3 SDK class.
@@ -43,11 +38,11 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 *
 	 * @return void
 	 */
-	public function action( $action ) {
+	public function action( $action, BackUpWordPress\Backup $backup ) {
 
 		if ( ( 'hmbkp_backup_complete' === $action ) && $this->get_field_value( 'S3' ) ) {
 
-			$file = $this->schedule->get_archive_filepath();
+			$file = $backup->get_archive_filepath();
 
 			if ( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) {
 				$key = HMBKP_AWS_ACCESS_KEY;
@@ -59,10 +54,10 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 			} else {
 				$secret = $this->get_field_value( 'secret_key' );
 
-			if ( defined( 'HMBKP_AWS_REGION' ) )
-				$region = HMBKP_AWS_REGION;
-			else
-				$region = $this->get_field_value( 'aws_region' );
+				if ( defined( 'HMBKP_AWS_REGION' ) )
+					$region = HMBKP_AWS_REGION;
+				else
+					$region = $this->get_field_value( 'aws_region' );
 			}
 
 			if ( defined( 'HMBKP_AWS_BUCKET' ) ) {
@@ -82,7 +77,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 				$this->delete_old_backups( $bucket );
 
 			} else {
-				$this->schedule->error( 'S3', sprintf( __( 'Could not connect to %s', 'backupwordpress' ), $this->get_field_value( 'bucket' ) ) );
+				$backup->error( 'S3', sprintf( __( 'Could not connect to %s', 'backupwordpress' ), $this->get_field_value( 'bucket' ) ) );
 			}
 		}
 
@@ -101,20 +96,20 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		// $pathToFile should be absolute path to a file on disk
 
 		$result = $this->s3->putObject(array(
-				'Bucket'     => $bucket_parts['bucket'],
-				'Key'        => $filename,
-				'SourceFile' => $file,
-				'Metadata'   => array(
-					'Foo' => 'abc',
-					'Baz' => '123'
-				)
-			));
+			'Bucket'     => $bucket_parts['bucket'],
+			'Key'        => $filename,
+			'SourceFile' => $file,
+			'Metadata'   => array(
+				'Foo' => 'abc',
+				'Baz' => '123'
+			)
+		));
 
 		// We can poll the object until it is accessible
 		$this->s3->waitUntilObjectExists(array(
-				'Bucket' => $bucket_parts['bucket'],
-				'Key'    => $filename
-			));
+			'Bucket' => $bucket_parts['bucket'],
+			'Key'    => $filename
+		));
 
 	}
 
@@ -123,7 +118,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	 *
 	 * @param $bucket
 	 */
-	protected function    delete_old_backups( $bucket ) {
+	protected function delete_old_backups( $bucket ) {
 
 		// get max backups number
 		$max_backups = absint( $this->get_field_value( 's3_max_backups' ) );
@@ -132,9 +127,9 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		// get list of existing remote backups
 
 		$iterator = $this->s3->getIterator('ListObjects', array(
-				'Bucket' => $bucket['bucket'],
-				'Prefix' => $bucket['prefix']
-			));
+			'Bucket' => $bucket['bucket'],
+			'Prefix' => $bucket['prefix']
+		));
 
 		$response = $iterator->toArray();
 
@@ -154,11 +149,11 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 
 			try {
-			$response = $this->s3->deleteObject( array(
+				$response = $this->s3->deleteObject( array(
 					'Bucket' => $bucket['bucket'],
 					'Key'    => $filename
 				) );
-			} catch( Exception $e ) {
+			} catch( \Exception $e ) {
 				trigger_error( 'Failed to delete file from S3: ' . $e->getMessage() );
 			}
 
@@ -197,10 +192,10 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 	function fetch_s3_connection( $key, $secret, $region = 'us-east-1' ) {
 
 		$this->s3 = S3Client::factory( array(
-				'key'    => $key,
-				'secret' => $secret,
-				'region' => $region
-			) );
+			'key'    => $key,
+			'secret' => $secret,
+			'region' => $region,
+		) );
 	}
 
 	/**
@@ -252,7 +247,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 		}
 
 		if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) {
-			// this is meant to be a string, to show it's using the constant. 
+			// this is meant to be a string, to show it's using the constant.
 			// We don't want to output the constant value (secret)
 			$secret_key = 'HMBKP_AWS_SECRET_KEY';
 		} else {
@@ -273,138 +268,138 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		<table class="form-table">
 
-		<tbody>
+			<tbody>
 
-		<tr>
+			<tr>
 
-			<th scope="row"><?php esc_html_e( 'Send a copy of each backup to Amazon S3', 'backupwordpress' ); ?></th>
+				<th scope="row"><?php esc_html_e( 'Send a copy of each backup to Amazon S3', 'backupwordpress' ); ?></th>
 
-			<td>
-				<label for="<?php echo $this->get_field_name( 'S3' ); ?>">
+				<td>
+					<label for="<?php echo $this->get_field_name( 'S3' ); ?>">
 
-					<input type="checkbox" <?php checked( $this->get_field_value( 'S3' ) ) ?> id="<?php echo $this->get_field_name( 'S3' ); ?>" name="<?php echo $this->get_field_name( 'S3' ); ?>" value="1"/><?php _e( 'Active', 'backupwordpress' ); ?>
-				</label>
-			</td>
+						<input type="checkbox" <?php checked( $this->get_field_value( 'S3' ) ) ?> id="<?php echo $this->get_field_name( 'S3' ); ?>" name="<?php echo $this->get_field_name( 'S3' ); ?>" value="1"/><?php _e( 'Active', 'backupwordpress' ); ?>
+					</label>
+				</td>
 
-		</tr>
+			</tr>
 
-		<tr>
+			<tr>
 
-			<th scope="row">
+				<th scope="row">
 
-			<label for="<?php echo $this->get_field_name( 'access_key' ); ?>"><?php _e( 'Access Key', 'backupwordpress' ); ?></label>
+					<label for="<?php echo $this->get_field_name( 'access_key' ); ?>"><?php _e( 'Access Key', 'backupwordpress' ); ?></label>
 
-			</th>
+				</th>
 
-			<td>
+				<td>
 
-				<input <?php disabled( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>" />
+					<input <?php disabled( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'access_key' ); ?>" name="<?php echo $this->get_field_name( 'access_key' ); ?>" value="<?php echo $access_key; ?>" />
 
-			<p class="description">Find your credentials here: <a href="https://console.aws.amazon.com/iam/home?#security_credential">AWS console</a></p>
+					<p class="description">Find your credentials here: <a href="https://console.aws.amazon.com/iam/home?#security_credential">AWS console</a></p>
 
-			</td>
+				</td>
 
-		</tr>
+			</tr>
 
-		<tr>
+			<tr>
 
-			<th scope="row">
+				<th scope="row">
 
-			<label for="<?php echo $this->get_field_name( 'secret_key' ); ?>"><?php _e( 'Secret Key', 'backupwordpress' ); ?></label>
+					<label for="<?php echo $this->get_field_name( 'secret_key' ); ?>"><?php _e( 'Secret Key', 'backupwordpress' ); ?></label>
 
-			</th>
+				</th>
 
-			<td>
+				<td>
 
-				<input <?php disabled( defined( 'HMBKP_AWS_SECRET_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>" />
+					<input <?php disabled( defined( 'HMBKP_AWS_SECRET_KEY' ) ) ?> type="password" id="<?php echo $this->get_field_name( 'secret_key' ); ?>" name="<?php echo $this->get_field_name( 'secret_key' ); ?>" value="<?php echo $secret_key ?>" />
 
-			</td>
+				</td>
 
-		</tr>
+			</tr>
 
-		<tr>
+			<tr>
 
-			<th scope="row"">
+				<th scope="row"">
 
-			<label for="<?php echo $this->get_field_name( 'bucket' ); ?>"><?php _e( 'Bucket', 'backupwordpress' ); ?></label>
+				<label for="<?php echo $this->get_field_name( 'bucket' ); ?>"><?php _e( 'Bucket', 'backupwordpress' ); ?></label>
 
-			</th>
+				</th>
 
-			<td>
+				<td>
 
-				<input <?php disabled( defined( 'HMBKP_AWS_BUCKET' ) ) ?> type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
+					<input <?php disabled( defined( 'HMBKP_AWS_BUCKET' ) ) ?> type="text" id="<?php echo $this->get_field_name( 'bucket' ); ?>" name="<?php echo $this->get_field_name( 'bucket' ); ?>" value="<?php echo $bucket ?>" />
 
-			<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress' ); ?></p>
+					<p class="description"><?php _e( 'The Bucket to save the backups to, you\'ll need to create it first.', 'backupwordpress' ); ?></p>
 
-			</td>
+				</td>
 
-		</tr>
+			</tr>
 
-		<tr>
+			<tr>
 
-			<th scope="row">
+				<th scope="row">
 
-			<label for="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>"><?php _e( 'Region', 'backupwordpress' ); ?></label>
+					<label for="<?php echo $this->get_field_name( 'aws_region' ); ?>"><?php _e( 'Region', 'backupwordpress' ); ?></label>
 
-			</th>
+				</th>
 
-			<?php
+				<?php
 
-			$region = $this->get_field_value( 'aws_region' );
+				$region = $this->get_field_value( 'aws_region' );
 
-			// set a default value if none is set
-			if ( empty( $region ) ) {
-				$region = 'us-east-1';
-			}
+				// set a default value if none is set
+				if ( empty( $region ) ) {
+					$region = 'us-east-1';
+				}
 
-			?>
+				?>
 
-			<td>
+				<td>
 
-			<select name="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>" id="<?php echo esc_attr( $this->get_field_name( 'aws_region' ) ); ?>">
+					<select name="<?php echo $this->get_field_name( 'aws_region' ); ?>" id="<?php echo $this->get_field_name( 'aws_region' ); ?>">
 
-				<option <?php selected( $region, 'us-east-1' ); ?> value="us-east-1"><?php _e( 'US Standard', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'us-east-1' ); ?> value="us-east-1"><?php _e( 'US Standard', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'us-west-2' ); ?> value="us-west-2"><?php _e( 'US West (Oregon) Region', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'us-west-2' ); ?> value="us-west-2"><?php _e( 'US West (Oregon) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'us-west-1' ); ?> value="us-west-1"><?php _e( 'US West (Northern California) Region', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'us-west-1' ); ?> value="us-west-1"><?php _e( 'US West (Northern California) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'eu-west-1' ); ?>
-					value="eu-west-1"><?php _e( 'EU (Ireland) Region', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'eu-west-1' ); ?>
+							value="eu-west-1"><?php _e( 'EU (Ireland) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'ap-southeast-1' ); ?> value="ap-southeast-1"><?php _e( 'Asia Pacific (Singapore) Region', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'ap-southeast-1' ); ?> value="ap-southeast-1"><?php _e( 'Asia Pacific (Singapore) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'ap-southeast-2' ); ?> value="ap-southeast-2"><?php _e( 'Asia Pacific (Sydney) Region', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'ap-southeast-2' ); ?> value="ap-southeast-2"><?php _e( 'Asia Pacific (Sydney) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress' ); ?></option>
 
-				<option <?php selected( $region, 'sa-east-1' ); ?> value="sa-east-1"><?php _e( 'South America (Sao Paulo) Region', 'backupwordpress' ); ?></option>
+						<option <?php selected( $region, 'sa-east-1' ); ?> value="sa-east-1"><?php _e( 'South America (Sao Paulo) Region', 'backupwordpress' ); ?></option>
 
-			</select>
+					</select>
 
-			</td>
+				</td>
 
-		</tr>
+			</tr>
 
-		<tr>
+			<tr>
 
-			<th scope="row">
+				<th scope="row">
 
-			<label for="<?php echo $this->get_field_name( 's3_max_backups' ); ?>"><?php _e( 'Max backups', 'backupwordpress' ); ?></label>
+					<label for="<?php echo $this->get_field_name( 's3_max_backups' ); ?>"><?php _e( 'Max backups', 'backupwordpress' ); ?></label>
 
-			</th>
+				</th>
 
-			<td>
+				<td>
 
-			<input class="small-text" type="number" min="1" step="1" id="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" name="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" value="<?php echo( empty( $max_backups ) ? 3 : $max_backups ); ?>"/>
+					<input class="small-text" type="number" min="1" step="1" id="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" name="<?php echo $this->get_field_name( 's3_max_backups' ); ?>" value="<?php echo( empty( $max_backups ) ? 3 : $max_backups ); ?>"/>
 
-			<p class="description"><?php _e( 'The maximum number of backups to store.', 'backupwordpress' ); ?></p>
+					<p class="description"><?php _e( 'The maximum number of backups to store.', 'backupwordpress' ); ?></p>
 
-			</td>
+				</td>
 
-		</tr>
+			</tr>
 
-		</tbody>
+			</tbody>
 
 		</table>
 
@@ -426,8 +421,8 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 			<td>
 
 				<?php if ( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) { ?>
-					<p><?php printf( __( 'You\'ve set it to: %s', 'hmbkp' ), '<code>' . HMBKP_AWS_ACCESS_KEY . '</code>' ); ?></p>
-				<?php } ?>
+			<p><?php printf( __( 'You\'ve set it to: %s', 'hmbkp' ), '<code>' . HMBKP_AWS_ACCESS_KEY . '</code>' ); ?></p>
+		<?php } ?>
 
 				<p><?php _e( 'Your Amazon S3 Access Key', 'backupwordpress-aws' ); ?> <?php _e( 'e.g.', 'backupwordpress-aws' ); ?>
 					<code>YOUR_AWS_ACCESS_KEY</code></p>
@@ -443,8 +438,8 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 			<td>
 
 				<?php if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) { ?>
-					<p><?php printf( __( 'You\'ve set it to: %s', 'hmbkp' ), '<code>' . HMBKP_AWS_SECRET_KEY . '</code>' ); ?></p>
-				<?php } ?>
+			<p><?php printf( __( 'You\'ve set it to: %s', 'hmbkp' ), '<code>' . HMBKP_AWS_SECRET_KEY . '</code>' ); ?></p>
+		<?php } ?>
 
 				<p><?php _e( 'Your Amazon S3 Secret Key', 'backupwordpress-aws' ); ?> <?php _e( 'e.g.', 'backupwordpress-aws' ); ?>
 					<code>YOUR_AWS_SECRET_KEY</code></p>
@@ -523,7 +518,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 			} else {
 				try {
 					$result = $this->s3->listBuckets( array() );
-				} catch ( Exception $e ) {
+				} catch ( \Exception $e ) {
 					$errors['bucket'] = sprintf( __( '%s', 'backupwordpress' ), $e->getMessage() );
 				}
 				$buckets = '';
@@ -574,7 +569,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 		$info = array();
 
-		foreach ( HMBKP_Requirements::get_requirements( 'amazon' ) as $requirement ) {
+		foreach ( BackUpWordPress\Requirements::get_requirements( 'amazon' ) as $requirement ) {
 			$info[ $requirement->name() ] = $requirement->result();
 		}
 
@@ -596,7 +591,7 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 			<tbody>
 
-			<?php foreach ( HMBKP_Requirements::get_requirements( 'amazon' ) as $requirement ) : ?>
+			<?php foreach ( BackUpWordPress\Requirements::get_requirements( 'amazon' ) as $requirement ) : ?>
 
 				<tr>
 					<td><?php echo $requirement->name(); ?></td>
@@ -616,4 +611,4 @@ class HMBKP_S3_Backup_Service extends HMBKP_Service {
 
 }
 
-HMBKP_Services::register( __FILE__, 'HMBKP_S3_Backup_Service' );
+BackUpWordPress\Services::register( __FILE__, 'HM\BackUpWordPressS3\S3_Backup' );
