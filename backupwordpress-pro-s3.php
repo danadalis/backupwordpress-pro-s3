@@ -4,7 +4,7 @@ Plugin Name: BackUpWordPress To Amazon S3
 Plugin URI: https://bwp.hmn.md/downloads/backupwordpress-to-amazon-s3/
 Description: Send your backups to your Rackspace account
 Author: Human Made Limited
-Version: 2.0.2
+Version: 2.0.3
 Author URI: https://bwp.hmn.md/
 License: GPLv2
 Network: true
@@ -47,12 +47,12 @@ class Plugin {
 	/**
 	 * The plugin version number.
 	 */
-	const PLUGIN_VERSION = '2.0.2';
+	const PLUGIN_VERSION = '2.0.3';
 
 	/**
 	 * Minimum version of BackUpWordPress compatibility.
 	 */
-	const MIN_BWP_VERSION = '3.0.4';
+	const MIN_BWP_VERSION = '3.1.2';
 
 	/**
 	 * URL for the updater to ping for a new version.
