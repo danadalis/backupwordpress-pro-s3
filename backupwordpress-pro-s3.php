@@ -2,7 +2,7 @@
 /*
 Plugin Name: BackUpWordPress To Amazon S3
 Plugin URI: https://bwp.hmn.md/downloads/backupwordpress-to-amazon-s3/
-Description: Send your backups to your Rackspace account
+Description: Send your backups to your Amazon S3 account
 Author: Human Made Limited
 Version: 2.0.3
 Author URI: https://bwp.hmn.md/
