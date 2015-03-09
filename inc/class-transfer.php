@@ -11,9 +11,9 @@ use Aws\Common\Exception\MultipartUploadException;
 use Aws\S3\Model\MultipartUpload\UploadBuilder;
 
 /**
- * Class HMBKP_S3_Backup_Service
+ * Class S3_Backup_Service
  */
-class S3_Backup extends BackUpWordPress\Service {
+class S3_Backup_Service extends BackUpWordPress\Service {
 
 	/**
 	 * Human Friendly service name
@@ -611,4 +611,4 @@ class S3_Backup extends BackUpWordPress\Service {
 
 }
 
-BackUpWordPress\Services::register( __FILE__, 'HM\BackUpWordPressS3\S3_Backup' );
+BackUpWordPress\Services::register( __FILE__, 'HM\BackUpWordPressS3\S3_Backup_Service' );

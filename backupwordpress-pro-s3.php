@@ -4,7 +4,7 @@ Plugin Name: BackUpWordPress To Amazon S3
 Plugin URI: https://bwp.hmn.md/downloads/backupwordpress-to-amazon-s3/
 Description: Send your backups to your Amazon S3 account
 Author: Human Made Limited
-Version: 2.0.3
+Version: 2.0.4
 Author URI: https://bwp.hmn.md/
 License: GPLv2
 Network: true
@@ -47,12 +47,12 @@ class Plugin {
 	/**
 	 * The plugin version number.
 	 */
-	const PLUGIN_VERSION = '2.0.3';
+	const PLUGIN_VERSION = '2.0.4';
 
 	/**
 	 * Minimum version of BackUpWordPress compatibility.
 	 */
-	const MIN_BWP_VERSION = '3.1.2';
+	const MIN_BWP_VERSION = '3.1.4';
 
 	/**
 	 * URL for the updater to ping for a new version.
@@ -110,6 +110,7 @@ class Plugin {
 		}
 
 		delete_option( 'hmbkpp_aws_settings' );
+		delete_transient( 'hmbkp_license_data_s3' );
 	}
 
 	/**
@@ -225,7 +226,7 @@ class Plugin {
 	public function get_notice_message() {
 
 		return sprintf(
-			__( '%1$s requires BackUpWordPress version %2$s. Please install or update it first.', 'backupwordpress' ),
+			$this->notice,
 			self::EDD_DOWNLOAD_FILE_NAME,
 			self::MIN_BWP_VERSION
 		);
@@ -239,12 +240,19 @@ class Plugin {
 	public function meets_requirements() {
 
 		if ( ! class_exists( 'HM\BackUpWordPress\Plugin' ) ) {
+			$this->notice = __( '%1$s requires BackUpWordPress version %2$s. Please install or update it first.', 'backupwordpress' );
 			return false;
 		}
 
 		$bwp = BackUpWordPress\Plugin::get_instance();
 
 		if ( version_compare( BackUpWordPress\Plugin::PLUGIN_VERSION, self::MIN_BWP_VERSION, '<' ) ) {
+			$this->notice = __( '%1$s requires BackUpWordPress version %2$s. Please install or update it first.', 'backupwordpress' );
+			return false;
+		}
+
+		if ( false === hmbkpp_aws_check_license() ) {
+			$this->notice = __( 'Your BackUpWordPress to Amazon S3 license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
 			return false;
 		}
 
