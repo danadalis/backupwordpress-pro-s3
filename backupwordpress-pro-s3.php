@@ -251,8 +251,10 @@ class Plugin {
 			return false;
 		}
 
+		// Check license expiry
 		if ( false === hmbkpp_aws_check_license() ) {
 			$this->notice = __( 'Your BackUpWordPress to Amazon S3 license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
+
 			return false;
 		}
 

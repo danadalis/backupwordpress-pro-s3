@@ -105,8 +105,13 @@ function hmbkpp_aws_add_api_key_admin_notice() {
 	$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
 	$settings = $plugin->fetch_settings();
 
-	if ( 'valid' == $settings['license_status'] )
+	if ( ! $settings ) {
 		return;
+	}
+
+	if ( 'valid' == $settings['license_status'] ) {
+		return;
+	}
 
 	// new license key entered, form submitted
 	if ( isset( $_GET['settings-updated'] ) && isset( $settings['hmbkpp-aws-settings-updated'] ) ) {
@@ -219,8 +224,6 @@ function hmbkpp_aws_deactivate_license() {
  *************************************/
 
 function hmbkpp_aws_check_license() {
-
-	global $wp_version;
 
 	$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
 	$settings = $plugin->fetch_settings();
