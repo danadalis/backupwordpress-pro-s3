@@ -74,6 +74,8 @@ class Plugin {
 	 */
 	private static $instance;
 
+	protected $admin;
+
 	/**
 	 * Instantiates a new Plugin object
 	 */
@@ -120,10 +122,6 @@ class Plugin {
 
 		$this->includes();
 
-		$this->plugin_updater();
-
-		$this->hooks();
-
 	}
 
 	/**
@@ -152,8 +150,6 @@ class Plugin {
 		if ( ! class_exists( '\HMBKPP_SL_Plugin_Updater' ) ) {
 			include( plugin_dir_path( __FILE__ ) . 'assets/edd-plugin-updater/HMBKPP-SL-Plugin-Updater.php' );
 		}
-
-		require_once plugin_dir_path( __FILE__ ) . 'admin/admin.php';
 
 		require_once plugin_dir_path( __FILE__ ) . 'inc/class-transfer.php';
 
@@ -184,30 +180,6 @@ class Plugin {
 	 * Register our hooked functions.
 	 */
 	protected function hooks() {}
-
-	/**
-	 * Returns an array of default values for plugin settings.
-	 *
-	 * @return array
-	 */
-	public function default_settings() {
-
-		$defaults = array(
-			'license_key'    => '',
-			'license_status' => '',
-		);
-
-		return $defaults;
-	}
-
-	/**
-	 * Fetch the plugin settings
-	 *
-	 * @return array
-	 */
-	public function fetch_settings() {
-		return array_merge( $this->default_settings(), get_option( 'hmbkpp_aws_settings', array() ) );
-	}
 
 	/**
 	 * Displays a user friendly message in the WordPress admin.
@@ -251,15 +223,20 @@ class Plugin {
 			return false;
 		}
 
-		// Check license expiry
-		if ( false === hmbkpp_aws_check_license() ) {
-			$this->notice = __( 'Your BackUpWordPress to Amazon S3 license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
-
-			return false;
-		}
+//		// Check license expiry
+//		if ( false === hmbkpp_aws_check_license() ) {
+//			$this->notice = __( 'Your BackUpWordPress to Amazon S3 license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
+//
+//			return false;
+//		}
 
 		return true;
 	}
 
 }
 Plugin::get_instance();
+
+if ( is_admin() ) {
+	require_once plugin_dir_path( __FILE__ ) . 'admin/admin.php';
+	Check_License::get_instance();
+}
