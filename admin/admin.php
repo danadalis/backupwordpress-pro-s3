@@ -74,11 +74,11 @@ class Check_License {
 		$notices = array();
 
 		if ( $this->is_license_expired( $license_data->expires ) ) {
-			$notices[] = __( 'BackUpWordPress to S3 License has expired', 'backupwordpress' );
+			$notices[] = __( 'Your BackUpWordPress to S3 license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
 		}
 
 		if ( ! $this->is_license_valid( $license_data->license ) ) {
-			$notices[] = __( 'BackUpWordPress to S3 License is not valid', 'backupwordpress' );
+			$notices[] = __( 'Your BackUpWordPress to S3 license is invalid, please double check it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
 		}
 
 		if ( ! empty( $notices ) ) {
