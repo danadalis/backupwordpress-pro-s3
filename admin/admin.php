@@ -166,6 +166,11 @@ class Check_License {
 
 	}
 
+	/**
+	 * Posts the activate action to the EDD API. Will then set the license_status to 'active'
+	 *
+	 * @return bool|void
+	 */
 	public function activate_license() {
 
 		$settings = $this->fetch_settings();
