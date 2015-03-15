@@ -83,6 +83,7 @@ class Plugin {
 
 		add_action( 'backupwordpress_loaded', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'maybe_self_deactivate' ) );
+
 	}
 
 	/**
@@ -119,6 +120,10 @@ class Plugin {
 	 * PLugin setup routine.
 	 */
 	public function init() {
+
+		if ( ! defined( 'HMBKP_S3_BASENAME' ) ) {
+			define( 'HMBKP_S3_BASENAME', plugin_basename( __FILE__ ) );
+		}
 
 		$this->includes();
 
@@ -222,13 +227,6 @@ class Plugin {
 			$this->notice = __( '%1$s requires BackUpWordPress version %2$s. Please install or update it first.', 'backupwordpress' );
 			return false;
 		}
-
-//		// Check license expiry
-//		if ( false === hmbkpp_aws_check_license() ) {
-//			$this->notice = __( 'Your BackUpWordPress to Amazon S3 license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
-//
-//			return false;
-//		}
 
 		return true;
 	}

@@ -86,8 +86,11 @@ class Check_License {
 		}
 
 		if ( ! empty( $notices ) ) {
+
 			Notices::get_instance()->set_notices( 'license_check', $notices, false );
 
+			deactivate_plugins( HMBKP_S3_BASENAME );
+			
 			return false;
 		}
 
