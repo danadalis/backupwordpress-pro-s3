@@ -74,11 +74,15 @@ class Check_License {
 		$notices = array();
 
 		if ( $this->is_license_expired( $license_data->expires ) ) {
-			$notices[] = __( 'Your BackUpWordPress to S3 license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
+			$notices[] = sprintf( __( 'Your %s license has expired, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), $this->plugin_name );
 		}
 
 		if ( ! $this->is_license_valid( $license_data->license ) ) {
-			$notices[] = __( 'Your BackUpWordPress to S3 license is invalid, please double check it now to continue to receive updates and support. Thanks!', 'backupwordpress' );
+			$notices[] = sprintf( __( 'Your %s license is invalid, please double check it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), $this->plugin_name );
+		}
+
+		if ( ! $this->is_license_allowed_for_domain( $license_data->license ) ) {
+			$notices[] = __( 'Please contact support to enable the license on this domain.', 'backupwordpress' );
 		}
 
 		if ( ! empty( $notices ) ) {
@@ -116,6 +120,11 @@ class Check_License {
 
 		return ( 'valid' === $license_status );
 
+	}
+
+	protected function is_license_allowed_for_domain( $license_status ) {
+
+		return ( 'site_inactive' === $license_status );
 	}
 
 	/**
