@@ -123,6 +123,13 @@ class Check_License {
 
 	}
 
+	/**
+	 * Determines whether the key was activated for this domain.
+	 *
+	 * @param $license_status
+	 *
+	 * @return bool
+	 */
 	protected function is_license_allowed_for_domain( $license_status ) {
 
 		return ( 'site_inactive' === $license_status );
@@ -200,7 +207,7 @@ class Check_License {
 		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 		$settings['license_status'] = $license_data->license;
-		$this->update_settings( $settings );
+		return $this->update_settings( $settings );
 	}
 
 	/**
