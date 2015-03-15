@@ -87,6 +87,7 @@ class Check_License {
 
 		if ( ! empty( $notices ) ) {
 			Notices::get_instance()->set_notices( 'license_check', $notices, false );
+
 			return false;
 		}
 
@@ -104,7 +105,7 @@ class Check_License {
 	protected function is_license_expired( $expiry ) {
 
 		$expiry_date = strtotime( $expiry );
-		$now = strtotime( 'now' );
+		$now         = strtotime( 'now' );
 
 		return $expiry_date < $now;
 	}
@@ -142,12 +143,12 @@ class Check_License {
 
 			$api_params = array(
 				'edd_action' => 'check_license',
-				'license' => $settings['license_key'],
-				'item_name' => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
+				'license'    => $settings['license_key'],
+				'item_name'  => urlencode( Plugin::EDD_DOWNLOAD_FILE_NAME )
 			);
 
 			// Call the custom API.
-			$response = wp_remote_get( add_query_arg( $api_params, \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+			$response = wp_remote_get( add_query_arg( $api_params, Plugin::EDD_STORE_URL ), array( 'timeout'   => 15, 'sslverify' => false ) );
 
 			if ( is_wp_error( $response ) ) {
 				return false;
@@ -165,13 +166,45 @@ class Check_License {
 
 	}
 
+	public function activate_license() {
+
+		$settings = $this->fetch_settings();
+
+		// Return early if we have a valid license
+		if ( $this->is_license_valid( $settings['license_key'] ) ) {
+			return;
+		}
+
+		// data to send in our API request
+		$api_params = array(
+			'edd_action' => 'activate_license',
+			'license'    => $settings['license_key'],
+			'item_name'  => urlencode( Plugin::EDD_DOWNLOAD_FILE_NAME ), // the name of our product in EDD
+			'url'        => home_url()
+		);
+
+		// Call the custom API.
+		$response = wp_remote_get( add_query_arg( $api_params, Plugin::EDD_STORE_URL ), array( 'timeout'   => 15, 'sslverify' => false ) );
+
+		// make sure the response came back okay
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+
+		// decode the license data
+		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+		$settings['license_status'] = $license_data->license;
+		$this->update_settings( $settings );
+	}
+
 	/**
 	 * Fetch the settings from the database.
 	 *
 	 * @return mixed|void
 	 */
 	public function fetch_settings() {
-		return get_option( 'hmbkpp_aws_settings', array( 'license_key' => '' ) );
+		return get_option( 'hmbkpp_aws_settings', array( 'license_key' => '', 'license_status' => '' ) );
 	}
 
 	/**
@@ -209,13 +242,13 @@ class Check_License {
 
 		if ( ! empty( $notices['license_check'] ) ) : ?>
 
-		<div class="error">
+			<div class="error">
 
-			<?php foreach ( $notices['license_check'] as $msg ) : ?>
-				<p><?php echo esc_html( $msg ); ?></p>
-			<?php endforeach; ?>
+				<?php foreach ( $notices['license_check'] as $msg ) : ?>
+					<p><?php echo esc_html( $msg ); ?></p>
+				<?php endforeach; ?>
 
-		</div>
+			</div>
 
 		<?php endif; ?>
 
@@ -223,17 +256,17 @@ class Check_License {
 
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
-			<p>
-				<label style="vertical-align: baseline;" for="license_key"><?php printf( __( '%1$s%2$s is almost ready.%3$s Enter your license key to get updates and support.', 'backupwordpress' ), '<strong>', $this->plugin_name, '</strong>' ); ?></label>
-				<input id="license_key" class="code regular-text" name="license_key" type="text" value="" />
+				<p>
+					<label style="vertical-align: baseline;" for="license_key"><?php printf( __( '%1$s%2$s is almost ready.%3$s Enter your license key to get updates and support.', 'backupwordpress' ), '<strong>', $this->plugin_name, '</strong>' ); ?></label>
+					<input id="license_key" class="code regular-text" name="license_key" type="text" value=""/>
 
-			</p>
+				</p>
 
-			<input type="hidden" name="action" value="hmbkp_license_key_submit_action" />
+				<input type="hidden" name="action" value="hmbkp_license_key_submit_action"/>
 
-			<?php wp_nonce_field( 'hmbkp_license_key_submit_action', 'hmbkp_license_key_submit_nonce' ); ?>
+				<?php wp_nonce_field( 'hmbkp_license_key_submit_action', 'hmbkp_license_key_submit_nonce' ); ?>
 
-			<?php submit_button( __( 'Save license key', 'backupwordpress' ) ); ?>
+				<?php submit_button( __( 'Save license key', 'backupwordpress' ) ); ?>
 
 			</form>
 
@@ -259,9 +292,11 @@ class Check_License {
 		}
 		$key = sanitize_text_field( $_POST['license_key'] );
 
-		$data = $this->fetch_settings();
+		$data                = $this->fetch_settings();
 		$data['license_key'] = $key;
 		$this->update_settings( $data );
+
+		$this->activate_license();
 
 		wp_safe_redirect( wp_get_referer() );
 		die;
