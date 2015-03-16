@@ -135,7 +135,7 @@ class Check_License {
 	 */
 	protected function is_license_allowed_for_domain( $license_status ) {
 
-		return ( 'site_inactive' === $license_status );
+		return ( 'site_inactive' !== $license_status );
 	}
 
 	/**
