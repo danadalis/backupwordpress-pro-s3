@@ -95,7 +95,7 @@ class Check_License {
 	 *
 	 * @return bool True if 'expired'
 	 */
-	protected function is_license_expired( $license_status ) {
+	public function is_license_expired( $license_status ) {
 
 		return ( 'expired' === $license_status );
 	}
@@ -107,7 +107,7 @@ class Check_License {
 	 *
 	 * @return bool True if 'invalid'
 	 */
-	protected function is_license_invalid( $license_status ) {
+	public function is_license_invalid( $license_status ) {
 
 		return ( 'invalid' === $license_status );
 
@@ -120,7 +120,7 @@ class Check_License {
 	 *
 	 * @return bool True if 'site_inactive'
 	 */
-	protected function is_license_inactive( $license_status ) {
+	public function is_license_inactive( $license_status ) {
 
 		return ( 'site_inactive' === $license_status );
 	}
