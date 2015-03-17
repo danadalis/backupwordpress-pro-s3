@@ -1,284 +1,313 @@
-<?php
-use HM\BackUpWordPress;
+<?php namespace HM\BackUpWordPressS3;
+
+use HM\BackUpWordPress\Notices;
 
 /**
- * Register the EDD license settings settings
- *
- * @return null
+ * Class Check_License
+ * @package HM\BackUpWordPressS3
  */
-function hmbkpp_aws_setup_admin() {
-	register_setting( 'hmbkpp-aws-settings', 'hmbkpp_aws_settings' );
-}
-add_action( 'admin_menu', 'hmbkpp_aws_setup_admin' );
+class Check_License {
 
-/**
- * Add License Key form
- * Only shown if no License Key
- *
- * @return null
- */
-function hmbkpp_aws_display_license_form() { ?>
+	/**
+	 * @var Check_License Singleton instance.
+	 */
+	protected static $instance;
 
-	<div id="hmbkpp-aws-message" class="updated">
+	/**
+	 * @var string Name of this plugin.
+	 */
+	protected $plugin_name;
 
-		<form method="post" action="options.php">
+	/**
+	 * @return Check_License
+	 */
+	public static function get_instance() {
 
-			<p>
+		if ( ! ( self::$instance instanceof Check_License ) ) {
+			self::$instance = new Check_License();
+		}
 
-				<?php
-				printf(
-					__( '%1$sLooks like you\'ve just installed BackUpWordPress to S3 or your license has expired.%2$s, %3$senter a valid license key to continue%4$s', 'backupwordpress' ),
-					'<strong>',
-					'</strong>',
-					'<label style="vertical-align: baseline;" for="hmbkpp_aws_license_key">',
-					'</label>'
-				);
-				?>
+		return self::$instance;
+	}
 
-				<input type="text" style="margin-left: 5px; margin-right: 5px; " class="code regular-text" id="hmbkpp_aws_license_key" name="hmbkpp_aws_settings[license_key]" />
+	/**
+	 * Instantiate a new object.
+	 */
+	private function __construct() {
 
-				<input type="hidden" name="hmbkpp_aws_settings[hmbkpp-aws-settings-updated]" value="1" />
+		add_action( 'backupwordpress_loaded', array( $this, 'init' ) );
 
-				<input class="button-primary" type="submit" value="<?php _e( 'Save License Key', 'backupwordpress' ); ?>" />
+		$this->plugin_name = 'BackUpWordPress to S3';
 
-			</p>
+	}
 
-			<p>
+	/**
+	 * Checks the stored key on load and if it's not valid, present the license form.
+	 */
+	public function init() {
 
-				<?php
-				printf(
-					__( '%1$sDon\'t have a BackUpWordPress to Amazon S3 License Key?%2$s %3$sPurchase one now%4$s and then report back here', 'backupwordpress' ),
-					'<strong>',
-					'</strong>',
-					'<a href="' . esc_url( 'https://bwp.hmn.md' ) . '" target="_blank">',
-					'</a>'
-				);
-				?>
+		$settings = $this->fetch_settings();
 
-			</p>
+		if ( ( empty( $settings['license_key'] ) ) || false === $this->validate_key( $settings['license_key'] ) ) {
 
-			<style>#message {
-					display: none;
-				}</style>
+			add_action( 'admin_notices', array( $this, 'display_license_form' ) );
 
-			<?php settings_fields( 'hmbkpp-aws-settings' );
+		}
 
-			// Output any sections defined for page sl-settings
-			do_settings_sections( 'hmbkpp-aws-settings' ); ?>
+		add_action( 'admin_post_hmbkp_license_key_submit_action', array( $this, 'license_key_submit' ) );
 
-		</form>
+	}
 
-	</div>
+	/**
+	 * Check whether the provided license key is valid.
+	 *
+	 * @return bool
+	 */
+	protected function validate_key( $key ) {
 
-<?php }
+		$license_data = $this->fetch_license_data( $key );
 
-function hmbkpp_aws_license_validity_notice( $license_status ) { ?>
+		$notices = array();
 
-	<div id="hmbkpp-aws-message" class="updated">
-		<p>
-			<?php
-			if ( 'valid' == $license_status ) {
-				printf(
-					__( '%1$sBackUpWordPress to Amazon S3 License Key successfully added%2$s, go back to %3$sthe backups admin page%4$s' , 'backupwordpress' ),
-					'<strong>',
-					'</strong>',
-					'<a href="' . esc_attr( HMBKP_ADMIN_URL ) . '">',
-					'</a>'
-				);
-			} else {
-				delete_option( 'hmbkpp_aws_settings' );
-				deactivate_plugins( 'backupwordpress-pro-s3/backupwordpress-pro-s3.php' );
-				printf(
-					__( '%1$sBackUpWordPress to Amazon S3 License Key is invalid%2$s, plugin will be deactivated' , 'backupwordpress' ),
-					'<strong>',
-					'</strong>'
-				);
+		if ( $this->is_license_expired( $license_data->license ) ) {
+			$notices[] = sprintf( __( 'Your %s license expired on %s, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), $this->plugin_name, $license_data->expires );
+		}
+
+		if ( $this->is_license_invalid( $license_data->license ) ) {
+			$notices[] = sprintf( __( 'Your %s license is invalid, please double check it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), $this->plugin_name );
+		}
+
+		if ( ! empty( $notices ) ) {
+
+			Notices::get_instance()->set_notices( 'license_check', $notices );
+
+			return false;
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Checks whether the license key has expired.
+	 *
+	 * @param $expiry
+	 *
+	 * @return bool True if 'expired'
+	 */
+	public function is_license_expired( $license_status ) {
+
+		return ( 'expired' === $license_status );
+	}
+
+	/**
+	 * Checks whether the license key is valid.
+	 *
+	 * @param $license_status
+	 *
+	 * @return bool True if 'invalid'
+	 */
+	public function is_license_invalid( $license_status ) {
+
+		return ( 'invalid' === $license_status );
+
+	}
+
+	/**
+	 * Determines whether the key was activated for this domain.
+	 *
+	 * @param $license_status
+	 *
+	 * @return bool True if 'site_inactive'
+	 */
+	public function is_license_inactive( $license_status ) {
+
+		return ( 'site_inactive' === $license_status );
+	}
+
+	/**
+	 * Fetches the plugin's license data either from the cache or from the EDD API.
+	 *
+	 * @return array|bool|mixed
+	 */
+	protected function fetch_license_data( $key ) {
+
+		$license_data = get_transient( 'hmbkp_aws_license_data' );
+
+		if ( false === $license_data ) {
+
+			$api_params = array(
+				'edd_action' => 'check_license',
+				'license'    => $key,
+				'item_name'  => urlencode( Plugin::EDD_DOWNLOAD_FILE_NAME )
+			);
+
+			// Call the custom API.
+			$response = wp_remote_get( add_query_arg( $api_params, Plugin::EDD_STORE_URL ), array( 'timeout'   => 15, 'sslverify' => false ) );
+
+			if ( is_wp_error( $response ) ) {
+				return false;
 			}
-			?>
-		</p>
-	</div>
 
-<?php }
+			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
-function hmbkpp_aws_add_api_key_admin_notice() {
+			if ( ! $this->is_license_invalid( $license_data->license ) ) {
+				set_transient( 'hmbkp_aws_license_data', $license_data, DAY_IN_SECONDS );
+				$this->update_settings( array( 'license_key' => $key, 'license_status' => $license_data->license, 'license_expired' => $this->is_license_expired( $license_data->expires ) ) );
+			}
 
-	$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
-	$settings = $plugin->fetch_settings();
+		}
 
-	if ( ! $settings ) {
-		return;
+		return $license_data;
+
 	}
 
-	if ( 'valid' == $settings['license_status'] ) {
-		return;
-	}
+	/**
+	 * Posts the activate action to the EDD API. Will then set the license_status to 'active'
+	 *
+	 * @return bool|void
+	 */
+	public function activate_license() {
 
-	// new license key entered, form submitted
-	if ( isset( $_GET['settings-updated'] ) && isset( $settings['hmbkpp-aws-settings-updated'] ) ) {
+		$settings = $this->fetch_settings();
 
-		// We got this far so first reset the form submission flag
-		unset( $settings['hmbkpp-aws-settings-updated'] );
-		update_option( 'hmbkpp_aws_settings', $settings );
+		// Return early if we have a valid license
+		if ( ! $this->is_license_invalid( $settings['license_key'] ) && ! $this->is_license_expired( $settings['license_expired'] ) ) {
+			return;
+		}
 
-		// then we can activate the license
-		hmbkpp_aws_activate_license();
-
-		// Settings have changed
-		$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
-		$settings = $plugin->fetch_settings();
-
-		hmbkpp_aws_license_validity_notice( $settings['license_status'] );
-
-	} else {
-		hmbkpp_aws_display_license_form();
-	}
-
-}
-add_action( 'admin_notices', 'hmbkpp_aws_add_api_key_admin_notice' );
-
-/************************************
- * this illustrates how to activate
- * a license key
- *************************************/
-
-function hmbkpp_aws_activate_license() {
-
-	// retrieve the license from the database
-	$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
-	$settings = $plugin->fetch_settings();
-	$license = $settings['license_key'];
-
-	// data to send in our API request
-	$api_params = array(
-		'edd_action'=> 'activate_license',
-		'license' 	=> $license,
-		'item_name' => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME ) // the name of our product in EDD
-	);
-
-	// Call the custom API.
-	$response = wp_remote_get( add_query_arg( $api_params, \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
-
-	// make sure the response came back okay
-	if ( is_wp_error( $response ) || ( 200 !== wp_remote_retrieve_response_code( $response ) ) ) {
-		return false;
-	}
-
-
-	// decode the license data
-	$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-
-	// $license_data->license will be either "active" or "inactive"
-	$settings['license_status'] = $license_data->license;
-	update_option( 'hmbkpp_aws_settings', $settings );
-
-}
-//add_action('admin_init', 'hmbkpp_aws_activate_license');
-
-/***********************************************
- * Illustrates how to deactivate a license key.
- * This will descrease the site count
- ***********************************************/
-
-function hmbkpp_aws_deactivate_license() {
-
-	// retrieve the license from the database
-	$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
-	$settings = $plugin->fetch_settings();
-	$license = $settings['license_key'];
-
-	// data to send in our API request
-	$api_params = array(
-		'edd_action'=> 'deactivate_license',
-		'license' 	=> $license,
-		'item_name' => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME ) // the name of our product in EDD
-	);
-
-	// Call the custom API.
-	$response = wp_remote_get( add_query_arg( $api_params, \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
-
-	// make sure the response came back okay
-	if ( is_wp_error( $response ) )
-		return false;
-
-	// decode the license data
-	$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-
-	$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
-	$settings = $plugin->fetch_settings();
-
-	// $license_data->license will be either "deactivated" or "failed"
-	if ( $license_data->license == 'deactivated' ) {
-		unset( $settings['license_status'] );
-		update_option( 'hmbkpp_aws_settings', $settings );
-	}
-
-}
-//add_action('admin_init', 'hmbkpp_aws_deactivate_license');
-
-/************************************
- * this illustrates how to check if
- * a license key is still valid
- * the updater does this for you,
- * so this is only needed if you
- * want to do something custom
- *************************************/
-
-function hmbkpp_aws_check_license() {
-
-	$plugin = \HM\BackUpWordPressS3\Plugin::get_instance();
-	$settings = $plugin->fetch_settings();
-	$license = $settings['license_key'];
-
-	if ( empty( $license ) ) {
-		return;
-	}
-
-	$license_data = get_transient( 'hmbkp_license_data_s3' );
-
-	if ( false === $license_data ) {
-
+		// data to send in our API request
 		$api_params = array(
-			'edd_action' => 'check_license',
-			'license' => $license,
-			'item_name' => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
+			'edd_action' => 'activate_license',
+			'license'    => $settings['license_key'],
+			'item_name'  => urlencode( Plugin::EDD_DOWNLOAD_FILE_NAME ), // the name of our product in EDD
+			'url'        => home_url()
 		);
 
 		// Call the custom API.
-		$response = wp_remote_get( add_query_arg( $api_params, \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+		$response = wp_remote_get( add_query_arg( $api_params, Plugin::EDD_STORE_URL ), array( 'timeout'   => 15, 'sslverify' => false ) );
 
-		if ( is_wp_error( $response ) )
+		// make sure the response came back okay
+		if ( is_wp_error( $response ) ) {
 			return false;
+		}
 
+		// decode the license data
 		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-		set_transient( 'hmbkp_license_data_s3', $license_data, DAY_IN_SECONDS );
+
+		$settings['license_status'] = $license_data->license;
+		if ( ! $this->is_license_expired( $license_data->expires ) ) {
+			$settings['license_expired'] = false;
+		}
+		return $this->update_settings( $settings );
 	}
 
-	$valid = ( 'valid' === $license_data->license );
-	$expired = hmbkp_has_license_expired( $license_data->expires );
-
-	if ( $valid && ! $expired ) {
-		return true;
-		// this license is still valid
-	} else {
-		return false;
-		// this license is no longer valid
+	/**
+	 * Fetch the settings from the database.
+	 *
+	 * @return mixed|void
+	 */
+	public function fetch_settings() {
+		return get_option( 'hmbkpp_aws_settings', array( 'license_key' => '', 'license_status' => '', 'license_expired' => false ) );
 	}
-}
 
-/**
- * Check the license expiry date against current date.
- *
- * @param $expiry
- *
- * @return bool True if expired, False otherwise.
- */
-if ( ! function_exists( 'hmbkp_has_license_expired' ) ) {
+	/**
+	 * Save the settings to the database.
+	 *
+	 * @param $data
+	 *
+	 * @return bool
+	 */
+	protected function update_settings( $data = array() ) {
+		return update_option( 'hmbkpp_aws_settings', $data );
+	}
 
-	function hmbkp_has_license_expired( $expiry ) {
+	protected function clear_settings() {
+		return delete_option( 'hmbkpp_aws_settings' ) && delete_transient( 'hmbkp_aws_license_data' );
+	}
 
-		$expiry_date = strtotime( $expiry );
-		$now = strtotime( 'now' );
+	/**
+	 * Display a form in the dashboard so the user can provide their license key.
+	 *
+	 */
+	public function display_license_form() {
 
-		return $expiry_date < $now;
+		$current_screen = get_current_screen();
+
+		if ( is_null( $current_screen ) ) {
+			return;
+		}
+
+		if ( ! defined( 'HMBKP_ADMIN_PAGE' ) ) {
+			return;
+		}
+
+		if ( $current_screen->id !== HMBKP_ADMIN_PAGE ) {
+			return;
+		}
+
+		$notices = Notices::get_instance()->get_notices();
+
+		if ( ! empty( $notices['license_check'] ) ) : ?>
+
+			<div class="error">
+
+				<?php foreach ( $notices['license_check'] as $msg ) : ?>
+					<p><?php echo esc_html( $msg ); ?></p>
+				<?php endforeach; ?>
+
+			</div>
+
+		<?php endif; ?>
+
+		<div class="updated">
+
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+
+				<p>
+					<label style="vertical-align: baseline;" for="license_key"><?php printf( __( '%1$s%2$s is almost ready.%3$s Enter your license key to get updates and support.', 'backupwordpress' ), '<strong>', $this->plugin_name, '</strong>' ); ?></label>
+					<input id="license_key" class="code regular-text" name="license_key" type="text" value=""/>
+
+				</p>
+
+				<input type="hidden" name="action" value="hmbkp_license_key_submit_action"/>
+
+				<?php wp_nonce_field( 'hmbkp_license_key_submit_action', 'hmbkp_license_key_submit_nonce' ); ?>
+
+				<?php submit_button( __( 'Save license key', 'backupwordpress' ) ); ?>
+
+			</form>
+
+		</div>
+
+	<?php }
+
+	/**
+	 * Handles the license key form submission. Saves the license key.
+	 */
+	public function license_key_submit() {
+
+		check_admin_referer( 'hmbkp_license_key_submit_action', 'hmbkp_license_key_submit_nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_safe_redirect( wp_get_referer() );
+			die;
+		}
+
+		if ( empty( $_POST['license_key'] ) ) {
+			wp_safe_redirect( wp_get_referer() );
+			die;
+		}
+		$key = sanitize_text_field( $_POST['license_key'] );
+
+		// Clear any existing settings
+		$this->clear_settings();
+		Notices::get_instance()->clear_all_notices();
+		if ( $this->validate_key( $key ) ) {
+			$this->activate_license();
+		}
+
+		wp_safe_redirect( wp_get_referer() );
+		die;
 	}
 }

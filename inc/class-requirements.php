@@ -15,11 +15,16 @@ class Define_License_Status extends BackUpWordPress\Requirement {
 	 */
 	protected function test() {
 
-		$plugin = Plugin::get_instance();
-		$settings = $plugin->fetch_settings();
+		$admin = Check_License::get_instance();
+		$settings = $admin->fetch_settings();
 
-		return ( isset( $settings['license_status'] ) && 'valid' === $settings['license_status'] ) ? 'License is valid' : 'License is invalid or not set';
+		$status = '';
 
+		if ( $admin->is_license_invalid() || $admin->is_license_expired() ) {
+			$status = __( 'License is invalid or expired', 'backupwordpress' );
+		}
+
+		return $status;
 	}
 
 }
