@@ -69,6 +69,10 @@ class Plugin {
 	 */
 	const EDD_PLUGIN_AUTHOR = 'Human Made Limited';
 
+	const PLUGIN_SETTINGS = 'hmbkpp_aws_settings';
+
+	const TRANSIENT_NAME = 'hmbkp_aws_license_data';
+
 	/**
 	 * @var Plugin The instance of this class.
 	 */
@@ -112,8 +116,8 @@ class Plugin {
 			return;
 		}
 
-		delete_option( 'hmbkpp_aws_settings' );
-		delete_transient( 'hmbkp_license_data_s3' );
+		delete_option( self::PLUGIN_SETTINGS );
+		delete_transient( self::TRANSIENT_NAME );
 	}
 
 	/**

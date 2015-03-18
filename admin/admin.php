@@ -18,6 +18,8 @@ class Check_License {
 	 */
 	protected $plugin_name;
 
+	const ACTION_HOOK = 'hmbkp_aws_license_key_submit';
+
 	/**
 	 * @return Check_License
 	 */
@@ -54,7 +56,7 @@ class Check_License {
 
 		}
 
-		add_action( 'admin_post_hmbkp_license_key_submit_action', array( $this, 'license_key_submit' ) );
+		add_action( 'admin_post_' . self::ACTION_HOOK, array( $this, 'license_key_submit' ) );
 
 		$this->plugin_updater();
 
@@ -155,7 +157,7 @@ class Check_License {
 	 */
 	protected function fetch_license_data( $key ) {
 
-		$license_data = get_transient( 'hmbkp_aws_license_data' );
+		$license_data = get_transient( Plugin::TRANSIENT_NAME );
 
 		if ( false === $license_data ) {
 
@@ -175,7 +177,7 @@ class Check_License {
 			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 			if ( ! $this->is_license_invalid( $license_data->license ) ) {
-				set_transient( 'hmbkp_aws_license_data', $license_data, DAY_IN_SECONDS );
+				set_transient( Plugin::TRANSIENT_NAME, $license_data, DAY_IN_SECONDS );
 				$this->update_settings( array( 'license_key' => $key, 'license_status' => $license_data->license, 'license_expired' => $this->is_license_expired( $license_data->expires ) ) );
 			}
 
@@ -231,7 +233,7 @@ class Check_License {
 	 * @return mixed|void
 	 */
 	public function fetch_settings() {
-		return get_option( 'hmbkpp_aws_settings', array( 'license_key' => '', 'license_status' => '', 'license_expired' => false ) );
+		return get_option( Plugin::PLUGIN_SETTINGS, array( 'license_key' => '', 'license_status' => '', 'license_expired' => false ) );
 	}
 
 	/**
@@ -242,11 +244,11 @@ class Check_License {
 	 * @return bool
 	 */
 	protected function update_settings( $data = array() ) {
-		return update_option( 'hmbkpp_aws_settings', $data );
+		return update_option( Plugin::PLUGIN_SETTINGS, $data );
 	}
 
 	protected function clear_settings() {
-		return delete_option( 'hmbkpp_aws_settings' ) && delete_transient( 'hmbkp_aws_license_data' );
+		return delete_option( Plugin::PLUGIN_SETTINGS ) && delete_transient( Plugin::TRANSIENT_NAME );
 	}
 
 	/**
@@ -293,7 +295,7 @@ class Check_License {
 
 				</p>
 
-				<input type="hidden" name="action" value="hmbkp_license_key_submit_action"/>
+				<input type="hidden" name="action" value="<?php echo esc_attr( ACTION_HOOK ); ?>"/>
 
 				<?php wp_nonce_field( 'hmbkp_license_key_submit_action', 'hmbkp_license_key_submit_nonce' ); ?>
 
