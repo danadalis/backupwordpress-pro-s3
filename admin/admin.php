@@ -20,6 +20,8 @@ class Check_License {
 
 	const ACTION_HOOK = 'hmbkp_aws_license_key_submit';
 
+	const NONCE_FIELD = 'hmbkp_aws_license_key_submit_nonce';
+
 	/**
 	 * @return Check_License
 	 */
@@ -297,7 +299,7 @@ class Check_License {
 
 				<input type="hidden" name="action" value="<?php echo esc_attr( ACTION_HOOK ); ?>"/>
 
-				<?php wp_nonce_field( 'hmbkp_license_key_submit_action', 'hmbkp_license_key_submit_nonce' ); ?>
+				<?php wp_nonce_field( self::ACTION_HOOK, self::NONCE_FIELD ); ?>
 
 				<?php submit_button( __( 'Save license key', 'backupwordpress' ) ); ?>
 
@@ -312,7 +314,7 @@ class Check_License {
 	 */
 	public function license_key_submit() {
 
-		check_admin_referer( 'hmbkp_license_key_submit_action', 'hmbkp_license_key_submit_nonce' );
+		check_admin_referer( self::ACTION_HOOK, self::NONCE_FIELD );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_safe_redirect( wp_get_referer() );
