@@ -56,6 +56,29 @@ class Check_License {
 
 		add_action( 'admin_post_hmbkp_license_key_submit_action', array( $this, 'license_key_submit' ) );
 
+		$this->plugin_updater();
+
+	}
+
+	/**
+	 * Sets up the EDD licensing check.
+	 */
+	public function plugin_updater() {
+
+		// Retrieve our license key from the DB
+		$settings = $this->fetch_settings();
+
+		$license_key = $settings['license_key'];
+
+		// Setup the updater
+		$edd_updater = new \HMBKPP_SL_Plugin_Updater( Plugin::EDD_STORE_URL, __FILE__, array(
+				'version'   => Plugin::PLUGIN_VERSION, // current version number
+				'license'   => $license_key, // license key (used get_option above to retrieve from DB)
+				'item_name' => Plugin::EDD_DOWNLOAD_FILE_NAME, // name of this plugin
+				'author'    => Plugin::EDD_PLUGIN_AUTHOR, // author of this plugin
+			)
+		);
+
 	}
 
 	/**
