@@ -20,7 +20,7 @@ class Define_License_Status extends BackUpWordPress\Requirement {
 
 		$status = '';
 
-		if ( $admin->is_license_invalid() || $admin->is_license_expired() ) {
+		if ( $admin->is_license_invalid( $settings['license_key'] ) || $admin->is_license_expired( $settings['license_key'] ) ) {
 			$status = __( 'License is invalid or expired', 'backupwordpress' );
 		}
 
