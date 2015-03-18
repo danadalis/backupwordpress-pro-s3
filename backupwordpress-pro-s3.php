@@ -161,32 +161,6 @@ class Plugin {
 	}
 
 	/**
-	 * Sets up the EDD licensing check.
-	 */
-	protected function plugin_updater() {
-
-		// Retrieve our license key from the DB
-		$settings = $this->fetch_settings();
-
-		$license_key = $settings['license_key'];
-
-		// Setup the updater
-		$edd_updater = new \HMBKPP_SL_Plugin_Updater( self::EDD_STORE_URL, __FILE__, array(
-				'version'   => self::PLUGIN_VERSION, // current version number
-				'license'   => $license_key, // license key (used get_option above to retrieve from DB)
-				'item_name' => self::EDD_DOWNLOAD_FILE_NAME, // name of this plugin
-				'author'    => self::EDD_PLUGIN_AUTHOR, // author of this plugin
-			)
-		);
-
-	}
-
-	/**
-	 * Register our hooked functions.
-	 */
-	protected function hooks() {}
-
-	/**
 	 * Displays a user friendly message in the WordPress admin.
 	 */
 	public function display_admin_notices() {
