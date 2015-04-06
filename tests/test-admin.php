@@ -28,7 +28,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 		$api_params = array(
 			'edd_action' => 'check_license',
 			'license'    => 'invalidkey',
-			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL )
+			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
 		);
 
 		add_filter( 'pre_http_request', $this->get_http_request_overide( $this->admin->get_api_url( $api_params ),file_get_contents( __DIR__ . '/data/invalid_license.json' )
@@ -46,18 +46,37 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 
 		$api_params = array(
 			'edd_action' => 'check_license',
-			'license'    => 'e804e13c0099a7275b0019d544232212',
-			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL )
+			'license'    => 'validkey',
+			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
 		);
 
 		add_filter( 'pre_http_request', $this->get_http_request_overide( $this->admin->get_api_url( $api_params ),file_get_contents( __DIR__ . '/data/valid_license.json' )
 		), 10, 3 );
 
-		$license_data = $this->admin->fetch_license_data( 'e804e13c0099a7275b0019d544232212' );
+		$license_data = $this->admin->fetch_license_data( 'validkey' );
 
 		$this->assertInstanceOf( 'stdClass', $license_data );
 
 		$this->assertTrue( ! $this->admin->is_license_invalid( $license_data->license ) );
+
+	}
+
+	function test_fetch_license_data_expired() {
+
+		$api_params = array(
+			'edd_action' => 'check_license',
+			'license'    => 'expiredkey',
+			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
+		);
+
+		add_filter( 'pre_http_request', $this->get_http_request_overide( $this->admin->get_api_url( $api_params ),file_get_contents( __DIR__ . '/data/expired_license.json' )
+		), 10, 3 );
+
+		$license_data = $this->admin->fetch_license_data( 'expiredkey' );
+
+		$this->assertInstanceOf( 'stdClass', $license_data );
+
+		$this->assertTrue( $this->admin->is_license_expired( $license_data->license ) );
 
 	}
 
