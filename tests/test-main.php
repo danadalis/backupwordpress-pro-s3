@@ -20,4 +20,3 @@ class Test_Main_Functions extends WP_UnitTestCase {
 		$this->assertEquals( 10, has_action( 'backupwordpress_loaded', array( $this->plugin, 'init' ) ) );
 	}
 }
-
