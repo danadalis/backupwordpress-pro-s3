@@ -26,6 +26,8 @@ if ( file_exists( '/srv/www/wordpress-develop.dev/tests/phpunit/includes/bootstr
 require $test_root . '/includes/functions.php';
 
 function _manually_load_plugin() {
+
+	require_once( dirname( __DIR__ ) . '/../backupwordpress/backupwordpress.php' );
 	require_once( dirname( __DIR__ ) . '/backupwordpress-pro-s3.php' );
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
