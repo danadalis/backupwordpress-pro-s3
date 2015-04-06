@@ -158,7 +158,7 @@ class Check_License {
 			$api_params = array(
 				'edd_action' => 'check_license',
 				'license'    => $key,
-				'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL )
+				'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
 			);
 
 			// Call the custom API.
@@ -174,7 +174,7 @@ class Check_License {
 
 				set_transient( Plugin::TRANSIENT_NAME, $license_data, DAY_IN_SECONDS );
 
-				$this->update_settings( array( 'license_key' => $key, 'license_status' => $license_data->license, 'license_expired' => $this->is_license_expired( $license_data->expires ) ) );
+				$this->update_settings( array( 'license_key' => $key, 'license_status' => $license_data->license, 'license_expired' => $this->is_license_expired( $license_data->license ) ) );
 
 			}
 
