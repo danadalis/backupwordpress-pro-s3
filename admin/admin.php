@@ -13,11 +13,6 @@ class Check_License {
 	 */
 	protected static $instance;
 
-	/**
-	 * @var string Name of this plugin.
-	 */
-	protected $plugin_name;
-
 	const ACTION_HOOK = 'hmbkp_aws_license_key_submit';
 
 	const NONCE_FIELD = 'hmbkp_aws_license_key_submit_nonce';
@@ -41,8 +36,6 @@ class Check_License {
 
 		add_action( 'backupwordpress_loaded', array( $this, 'init' ) );
 
-		$this->plugin_name = 'BackUpWordPress to S3';
-
 	}
 
 	/**
@@ -61,13 +54,12 @@ class Check_License {
 		add_action( 'admin_post_' . self::ACTION_HOOK, array( $this, 'license_key_submit' ) );
 
 		$this->plugin_updater();
-
 	}
 
 	/**
 	 * Sets up the EDD licensing check.
 	 */
-	public function plugin_updater() {
+	protected function plugin_updater() {
 
 		// Retrieve our license key from the DB
 		$settings = $this->fetch_settings();
@@ -97,11 +89,11 @@ class Check_License {
 		$notices = array();
 
 		if ( $this->is_license_expired( $license_data->license ) ) {
-			$notices[] = sprintf( __( 'Your %s license expired on %s, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), $this->plugin_name, $license_data->expires );
+			$notices[] = sprintf( __( 'Your %s license expired on %s, renew it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), Plugin::EDD_DOWNLOAD_FILE_NAME, $license_data->expires );
 		}
 
 		if ( $this->is_license_invalid( $license_data->license ) ) {
-			$notices[] = sprintf( __( 'Your %s license is invalid, please double check it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), $this->plugin_name );
+			$notices[] = sprintf( __( 'Your %s license is invalid, please double check it now to continue to receive updates and support. Thanks!', 'backupwordpress' ), Plugin::EDD_DOWNLOAD_FILE_NAME );
 		}
 
 		if ( ! empty( $notices ) ) {
@@ -157,7 +149,7 @@ class Check_License {
 	 *
 	 * @return array|bool|mixed
 	 */
-	protected function fetch_license_data( $key ) {
+	public function fetch_license_data( $key ) {
 
 		$license_data = get_transient( Plugin::TRANSIENT_NAME );
 
@@ -166,11 +158,11 @@ class Check_License {
 			$api_params = array(
 				'edd_action' => 'check_license',
 				'license'    => $key,
-				'item_name'  => urlencode( Plugin::EDD_DOWNLOAD_FILE_NAME )
+				'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_STORE_URL )
 			);
 
 			// Call the custom API.
-			$response = wp_remote_get( add_query_arg( $api_params, Plugin::EDD_STORE_URL ), array( 'timeout'   => 15, 'sslverify' => false ) );
+			$response = wp_remote_get( $this->get_api_url( $api_params ), array( 'timeout'   => 15, 'sslverify' => false ) );
 
 			if ( is_wp_error( $response ) ) {
 				return false;
@@ -179,13 +171,29 @@ class Check_License {
 			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 			if ( ! $this->is_license_invalid( $license_data->license ) ) {
+
 				set_transient( Plugin::TRANSIENT_NAME, $license_data, DAY_IN_SECONDS );
+
 				$this->update_settings( array( 'license_key' => $key, 'license_status' => $license_data->license, 'license_expired' => $this->is_license_expired( $license_data->expires ) ) );
+
 			}
 
 		}
 
 		return $license_data;
+
+	}
+
+	/**
+	 * Builds the API call URL.
+	 *
+	 * @param $key
+	 *
+	 * @return string
+	 */
+	public function get_api_url( $args ) {
+
+		return add_query_arg( $args, Plugin::EDD_STORE_URL );
 
 	}
 
@@ -212,7 +220,7 @@ class Check_License {
 		);
 
 		// Call the custom API.
-		$response = wp_remote_get( add_query_arg( $api_params, Plugin::EDD_STORE_URL ), array( 'timeout'   => 15, 'sslverify' => false ) );
+		$response = wp_remote_get( $this->get_api_url( $api_params ), array( 'timeout'   => 15, 'sslverify' => false ) );
 
 		// make sure the response came back okay
 		if ( is_wp_error( $response ) ) {
@@ -223,9 +231,11 @@ class Check_License {
 		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 		$settings['license_status'] = $license_data->license;
+
 		if ( ! $this->is_license_expired( $license_data->expires ) ) {
 			$settings['license_expired'] = false;
 		}
+
 		return $this->update_settings( $settings );
 	}
 
@@ -235,7 +245,7 @@ class Check_License {
 	 * @return mixed|void
 	 */
 	public function fetch_settings() {
-		return get_option( Plugin::PLUGIN_SETTINGS, array( 'license_key' => '', 'license_status' => '', 'license_expired' => false ) );
+		return apply_filters( 'hmbkpp_aws_settings', get_option( Plugin::PLUGIN_SETTINGS, array( 'license_key' => '', 'license_status' => '', 'license_expired' => false ) ) );
 	}
 
 	/**
@@ -292,12 +302,12 @@ class Check_License {
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 
 				<p>
-					<label style="vertical-align: baseline;" for="license_key"><?php printf( __( '%1$s%2$s is almost ready.%3$s Enter your license key to get updates and support.', 'backupwordpress' ), '<strong>', $this->plugin_name, '</strong>' ); ?></label>
+					<label style="vertical-align: baseline;" for="license_key"><?php printf( __( '%1$s%2$s is almost ready.%3$s Enter your license key to get updates and support.', 'backupwordpress' ), '<strong>', Plugin::EDD_DOWNLOAD_FILE_NAME, '</strong>' ); ?></label>
 					<input id="license_key" class="code regular-text" name="license_key" type="text" value=""/>
 
 				</p>
 
-				<input type="hidden" name="action" value="<?php echo esc_attr( ACTION_HOOK ); ?>"/>
+				<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION_HOOK ); ?>"/>
 
 				<?php wp_nonce_field( self::ACTION_HOOK, self::NONCE_FIELD ); ?>
 
@@ -329,7 +339,9 @@ class Check_License {
 
 		// Clear any existing settings
 		$this->clear_settings();
+
 		Notices::get_instance()->clear_all_notices();
+
 		if ( $this->validate_key( $key ) ) {
 			$this->activate_license();
 		}
