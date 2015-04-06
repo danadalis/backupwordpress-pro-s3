@@ -34,13 +34,12 @@ namespace HM\BackUpWordPressS3;
 
 use HM\BackUpWordPress;
 
-register_activation_hook( __FILE__, array( 'HM\BackUpWordPressS3\Plugin', 'on_activation' ) );
+register_activation_hook( __FILE__, array( __NAMESPACE__ . '\\Plugin', 'on_activation' ) );
 
-register_deactivation_hook( __FILE__, array( 'HM\BackUpWordPressS3\Plugin', 'on_deactivation' ) );
+register_deactivation_hook( __FILE__, array( __NAMESPACE__ . '\\Plugin', 'on_deactivation' ) );
 
 /**
  * Class Plugin
- * @package HM\BackUpWordPressS3
  */
 class Plugin {
 
