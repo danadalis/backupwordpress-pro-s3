@@ -1,9 +1,4 @@
-<?php
-namespace HM\BackUpWordPressS3;
-
-use HM\BackUpWordPress;
-
-require_once plugin_dir_path( __FILE__ ) . '../assets/vendor/autoload.php';
+<?php namespace HM\BackUpWordPress;
 
 use Aws\S3\S3Client;
 use Aws\Common\Enum\Size;
@@ -13,7 +8,7 @@ use Aws\S3\Model\MultipartUpload\UploadBuilder;
 /**
  * Class S3_Backup_Service
  */
-class S3_Backup_Service extends BackUpWordPress\Service {
+class S3BackUpService extends Service {
 
 	/**
 	 * Human Friendly service name
@@ -38,7 +33,7 @@ class S3_Backup_Service extends BackUpWordPress\Service {
 	 *
 	 * @return void
 	 */
-	public function action( $action, BackUpWordPress\Backup $backup ) {
+	public function action( $action, Backup $backup ) {
 
 		if ( ( 'hmbkp_backup_complete' === $action ) && $this->get_field_value( 'S3' ) ) {
 
@@ -101,7 +96,7 @@ class S3_Backup_Service extends BackUpWordPress\Service {
 			'SourceFile' => $file,
 			'Metadata'   => array(
 				'Foo' => 'abc',
-				'Baz' => '123'
+				'Baz' => '123',
 			)
 		));
 
@@ -185,7 +180,7 @@ class S3_Backup_Service extends BackUpWordPress\Service {
 	 *
 	 * @param $key
 	 * @param $secret
-	 * @param $bucket
+	 * @param $region
 	 *
 	 * @return AmazonS3|bool
 	 */
@@ -557,58 +552,11 @@ class S3_Backup_Service extends BackUpWordPress\Service {
 	 * @return bool True if service is active
 	 */
 	public function is_service_active() {
-		return (bool) $this->get_field_value( 'S3' );
+		return (bool) $this->get_field_value( $this->name );
 	}
 
-	/**
-	 * @return array
-	 */
-	public static function intercom_data() {
+	public static function intercom_data() { return array(); }
 
-		require_once plugin_dir_path( __FILE__ ) . '../inc/class-requirements.php';
-
-		$info = array();
-
-		foreach ( BackUpWordPress\Requirements::get_requirements( 'amazon' ) as $requirement ) {
-			$info[ $requirement->name() ] = $requirement->result();
-		}
-
-		return $info;
-	}
-
-	/**
-	 *
-	 */
-	public static function intercom_data_html() {
-
-		require_once plugin_dir_path( __FILE__ ) . '../inc/class-requirements.php';
-
-		?>
-
-		<h3><?php _e( 'Amazon', 'backupwordpress' ); ?></h3>
-
-		<table class="fixed widefat">
-
-			<tbody>
-
-			<?php foreach ( BackUpWordPress\Requirements::get_requirements( 'amazon' ) as $requirement ) : ?>
-
-				<tr>
-					<td><?php echo $requirement->name(); ?></td>
-					<td>
-						<pre><?php echo $requirement->result(); ?></pre>
-					</td>
-				</tr>
-
-			<?php endforeach; ?>
-
-			</tbody>
-
-		</table>
-
-	<?php
-	}
+	public static function intercom_data_html() {}
 
 }
-
-BackUpWordPress\Services::register( __FILE__, 'HM\BackUpWordPressS3\S3_Backup_Service' );

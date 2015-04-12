@@ -1,0 +1,19 @@
+{
+    "name": "humanmade/backupwordpress-pro-s3",
+    "description": "Back up your site to Amazon S3.",
+    "require": {
+        "pimple/pimple": "~3.0",
+        "aws/aws-sdk-php": "2.*"
+    },
+    "authors": [
+        {
+            "name": "Human Made Limited",
+            "email": "hello@hmn.md"
+        }
+    ],
+  "autoload": {
+    "psr-4": {
+      "HM\\BackUpWordPress\\": "inc/common"
+    }
+  }
+}

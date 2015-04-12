@@ -1,6 +1,4 @@
 <?php
-// Because main plugin checks is_admin before loading
-require_once dirname( __DIR__ ) . '/admin/admin.php';
 
 class Test_Admin_Functions extends WP_UnitTestCase {
 
@@ -10,7 +8,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 
 		parent::setUp();
 
-		$this->admin = \HM\BackUpWordPressS3\Check_License::get_instance();
+		$this->admin = new \HM\BackUpWordPress\CheckLicense( 'hmbkpp_aws_settings', 'BackUpWordPress To Amazon S3', 'hmbkp_license_data_s3', new HM\BackUpWordPress\Addon( '2.0.4', '3.1.4', 'HM\\BackUpWordPress\\S3BackUpService', HM\BackUpWordPress\Plugin::get_instance() ), new \HM\BackUpWordPress\PluginUpdater() );
 
 	}
 
@@ -28,7 +26,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 		$api_params = array(
 			'edd_action' => 'check_license',
 			'license'    => 'invalidkey',
-			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
+			'item_name'  => urlencode( $this->admin->edd_download_file_name )
 		);
 
 		add_filter( 'pre_http_request', $this->get_http_request_overide( $this->admin->get_api_url( $api_params ),file_get_contents( __DIR__ . '/data/invalid_license.json' )
@@ -47,7 +45,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 		$api_params = array(
 			'edd_action' => 'check_license',
 			'license'    => 'validkey',
-			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
+			'item_name'  => urlencode( $this->admin->edd_download_file_name )
 		);
 
 		add_filter( 'pre_http_request', $this->get_http_request_overide( $this->admin->get_api_url( $api_params ),file_get_contents( __DIR__ . '/data/valid_license.json' )
@@ -66,7 +64,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 		$api_params = array(
 			'edd_action' => 'check_license',
 			'license'    => 'expiredkey',
-			'item_name'  => urlencode( \HM\BackUpWordPressS3\Plugin::EDD_DOWNLOAD_FILE_NAME )
+			'item_name'  => urlencode( $this->admin->edd_download_file_name )
 		);
 
 		add_filter( 'pre_http_request', $this->get_http_request_overide( $this->admin->get_api_url( $api_params ),file_get_contents( __DIR__ . '/data/expired_license.json' )
