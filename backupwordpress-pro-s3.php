@@ -39,8 +39,6 @@ $container = new Container();
 require __DIR__ . '/inc/Config.php';
 require __DIR__ . '/inc/Services.php';
 
-add_action( 'backupwordpress_loaded', function() use ( $container ) {
-	$addon = $container['addon'];
-	$admin = $container['admin'];
-	$addon->register( __DIR__ . '/inc/' );
-} );
+$addon = $container['addon'];
+register_activation_hook( __FILE__, array( $addon, 'maybe_self_deactivate' ) );
+$admin = $container['admin'];
