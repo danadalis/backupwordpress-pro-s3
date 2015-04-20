@@ -40,5 +40,12 @@ require __DIR__ . '/inc/Config.php';
 require __DIR__ . '/inc/Services.php';
 
 $addon = $container['addon'];
+
 register_activation_hook( __FILE__, array( $addon, 'maybe_self_deactivate' ) );
+
 $admin = $container['admin'];
+
+add_action( 'backupwordpress_loaded', function() use ( $container, $addon ){
+
+	require_once __DIR__ . '/inc/S3BackUpService.php';
+});
