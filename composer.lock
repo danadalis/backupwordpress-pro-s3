@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e82b707bbf43584e6354bc70f6a188a4",
+    "hash": "7f5ba55e7e1979442d68867929a2ec57",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -170,16 +170,16 @@
         },
         {
             "name": "humanmade/bwp-common",
-            "version": "0.2.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/humanmade/BackUpWordPress-Common.git",
-                "reference": "2b3e70a16d83a23a20fc6370e3084867442573d1"
+                "reference": "77dd28e24eb2e193148bbc69b6be7bc40ea7d6e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/2b3e70a16d83a23a20fc6370e3084867442573d1",
-                "reference": "2b3e70a16d83a23a20fc6370e3084867442573d1",
+                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/77dd28e24eb2e193148bbc69b6be7bc40ea7d6e9",
+                "reference": "77dd28e24eb2e193148bbc69b6be7bc40ea7d6e9",
                 "shasum": ""
             },
             "type": "wordpress-plugin",
@@ -208,7 +208,7 @@
                 "backup",
                 "wordpress"
             ],
-            "time": "2015-04-20 10:21:52"
+            "time": "2015-04-21 16:10:22"
         },
         {
             "name": "pimple/pimple",
@@ -319,7 +319,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "humanmade/bwp-common": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

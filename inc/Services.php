@@ -13,5 +13,5 @@ $container['updater'] = function( $container ) {
 };
 
 $container['admin'] = function( $container ) {
-	return new $container['checklicense_class']( $container['addon_settings'], $container['edd_download_file_name'], $container['transient_name'], $container['addon'], $container['updater'] );
+	return new $container['checklicense_class']( $container['addon_settings'], $container['edd_download_file_name'], $container['addon'], $container['updater'], $container['prefix'] );
 };
