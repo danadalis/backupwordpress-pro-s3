@@ -8,7 +8,9 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 
 		parent::setUp();
 
-		$this->admin = new \HM\BackUpWordPress\CheckLicense( 'hmbkpp_aws_settings', 'BackUpWordPress To Amazon S3', 'hmbkp_license_data_s3', new HM\BackUpWordPress\Addon( '2.0.4', '3.1.4', 'HM\\BackUpWordPress\\S3BackUpService', HM\BackUpWordPress\Plugin::get_instance() ), new \HM\BackUpWordPress\PluginUpdater() );
+		$addon = new HM\BackUpWordPress\Addon( '2.0.4', '3.1.4', 'S3BackUpService','BackUpWordPress To Amazon S3' );
+
+		$this->admin = new \HM\BackUpWordPress\CheckLicense( 'hmbkpp_aws_settings', 'BackUpWordPress To Amazon S3', $addon, new \HM\BackUpWordPress\PluginUpdater(), 'aws' );
 
 	}
 
@@ -18,7 +20,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 	}
 
 	function test_license_is_expired() {
-		$this->assertTrue( $this->admin->is_license_expired( 'expired' ) );
+		$this->assertTrue( $this->admin->is_license_expired( '2013-03-14 14:04:44' ) );
 	}
 
 	function test_fetch_license_data_invalid() {
@@ -34,9 +36,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 
 		$license_data = $this->admin->fetch_license_data( 'invalidkey' );
 
-		$this->assertInstanceOf( 'stdClass', $license_data );
-
-		$this->assertTrue( $this->admin->is_license_invalid( $license_data->license ) );
+		$this->assertTrue( $this->admin->is_license_invalid( $license_data['license_status'] ) );
 
 	}
 
@@ -53,9 +53,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 
 		$license_data = $this->admin->fetch_license_data( 'validkey' );
 
-		$this->assertInstanceOf( 'stdClass', $license_data );
-
-		$this->assertTrue( ! $this->admin->is_license_invalid( $license_data->license ) );
+		$this->assertTrue( ! $this->admin->is_license_invalid( $license_data['license_status'] ) );
 
 	}
 
@@ -72,9 +70,7 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 
 		$license_data = $this->admin->fetch_license_data( 'expiredkey' );
 
-		$this->assertInstanceOf( 'stdClass', $license_data );
-
-		$this->assertTrue( $this->admin->is_license_expired( $license_data->license ) );
+		$this->assertTrue( $this->admin->is_license_expired( $license_data['expiry_date'] ) );
 
 	}
 
@@ -102,4 +98,3 @@ class Test_Admin_Functions extends WP_UnitTestCase {
 	}
 
 }
-
