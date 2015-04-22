@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/humanmade/BackUpWordPress-Common.git",
-                "reference": "77dd28e24eb2e193148bbc69b6be7bc40ea7d6e9"
+                "reference": "e25f16a19293eebee4b7fd6b2a4228522c7fa6fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/77dd28e24eb2e193148bbc69b6be7bc40ea7d6e9",
-                "reference": "77dd28e24eb2e193148bbc69b6be7bc40ea7d6e9",
+                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/e25f16a19293eebee4b7fd6b2a4228522c7fa6fa",
+                "reference": "e25f16a19293eebee4b7fd6b2a4228522c7fa6fa",
                 "shasum": ""
             },
             "type": "wordpress-plugin",
@@ -208,7 +208,7 @@
                 "backup",
                 "wordpress"
             ],
-            "time": "2015-04-21 16:10:22"
+            "time": "2015-04-21 19:07:01"
         },
         {
             "name": "pimple/pimple",
