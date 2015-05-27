@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "2.8.2",
+            "version": "2.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "4237e97388d2906d2aa88f727736968fc2df9cb6"
+                "reference": "399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4237e97388d2906d2aa88f727736968fc2df9cb6",
-                "reference": "4237e97388d2906d2aa88f727736968fc2df9cb6",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b",
+                "reference": "399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b",
                 "shasum": ""
             },
             "require": {
@@ -71,7 +71,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-04-23 20:14:25"
+            "time": "2015-05-26 21:41:32"
         },
         {
             "name": "guzzle/guzzle",
@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/humanmade/BackUpWordPress-Common.git",
-                "reference": "609dffa45c6a0e973122a63b07d767d85ac3ff05"
+                "reference": "4a05866f788df6e2cd04334277bc61a4f2168d14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/609dffa45c6a0e973122a63b07d767d85ac3ff05",
-                "reference": "609dffa45c6a0e973122a63b07d767d85ac3ff05",
+                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/4a05866f788df6e2cd04334277bc61a4f2168d14",
+                "reference": "4a05866f788df6e2cd04334277bc61a4f2168d14",
                 "shasum": ""
             },
             "type": "wordpress-plugin",
@@ -208,7 +208,7 @@
                 "backup",
                 "wordpress"
             ],
-            "time": "2015-04-29 15:44:12"
+            "time": "2015-05-27 09:44:24"
         },
         {
             "name": "pimple/pimple",
@@ -258,17 +258,17 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.6.6",
+            "version": "v2.6.8",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "70f7c8478739ad21e3deef0d977b38c77f1fb284"
+                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/70f7c8478739ad21e3deef0d977b38c77f1fb284",
-                "reference": "70f7c8478739ad21e3deef0d977b38c77f1fb284",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/672593bc4b0043a0acf91903bb75a1c82d8f2e02",
+                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02",
                 "shasum": ""
             },
             "require": {
@@ -303,17 +303,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony EventDispatcher Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-03-13 17:37:22"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-02 15:18:45"
         }
     ],
     "packages-dev": [],
