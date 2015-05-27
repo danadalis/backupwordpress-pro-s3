@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "7f5ba55e7e1979442d68867929a2ec57",
@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/humanmade/BackUpWordPress-Common.git",
-                "reference": "4a05866f788df6e2cd04334277bc61a4f2168d14"
+                "reference": "99ae6fb702ea0e3e952ed9bc84f376c39b88e213"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/4a05866f788df6e2cd04334277bc61a4f2168d14",
-                "reference": "4a05866f788df6e2cd04334277bc61a4f2168d14",
+                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/99ae6fb702ea0e3e952ed9bc84f376c39b88e213",
+                "reference": "99ae6fb702ea0e3e952ed9bc84f376c39b88e213",
                 "shasum": ""
             },
             "type": "wordpress-plugin",
@@ -208,7 +208,7 @@
                 "backup",
                 "wordpress"
             ],
-            "time": "2015-05-27 09:44:24"
+            "time": "2015-05-27 17:43:45"
         },
         {
             "name": "pimple/pimple",

@@ -5,7 +5,7 @@ $container['bwp'] = function( $container ) {
 };
 
 $container['addon'] = function( $container ) {
-	return new $container['addon_class']( $container['addon_version'], $container['min_bwp_version'], $container['service_class'],$container['edd_download_file_name'] );
+	return new $container['addon_class']( $container['addon_version'], $container['min_bwp_version'], $container['service_class'],$container['edd_download_file_name'], $container['plugin_name'], $container['addon_settings'] );
 };
 
 $container['updater'] = function( $container ) {
