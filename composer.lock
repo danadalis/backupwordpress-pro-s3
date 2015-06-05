@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "2.8.7",
+            "version": "2.8.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b"
+                "reference": "7dbaacbaf6ef6cb2f2df749223ba016448c6a266"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b",
-                "reference": "399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7dbaacbaf6ef6cb2f2df749223ba016448c6a266",
+                "reference": "7dbaacbaf6ef6cb2f2df749223ba016448c6a266",
                 "shasum": ""
             },
             "require": {
@@ -29,6 +29,7 @@
                 "ext-openssl": "*",
                 "monolog/monolog": "~1.4",
                 "phpunit/phpunit": "~4.0",
+                "phpunit/phpunit-mock-objects": "2.3.1",
                 "symfony/yaml": "~2.1"
             },
             "suggest": {
@@ -39,11 +40,6 @@
                 "symfony/yaml": "Eases the ability to write manifests for creating jobs in AWS Import/Export"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.7-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "Aws": "src/"
@@ -71,7 +67,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-05-26 21:41:32"
+            "time": "2015-06-04 22:17:29"
         },
         {
             "name": "guzzle/guzzle",
@@ -174,12 +170,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/humanmade/BackUpWordPress-Common.git",
-                "reference": "99ae6fb702ea0e3e952ed9bc84f376c39b88e213"
+                "reference": "bbca56ceff098897d203f70b41b157ba1966fd91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/99ae6fb702ea0e3e952ed9bc84f376c39b88e213",
-                "reference": "99ae6fb702ea0e3e952ed9bc84f376c39b88e213",
+                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/bbca56ceff098897d203f70b41b157ba1966fd91",
+                "reference": "bbca56ceff098897d203f70b41b157ba1966fd91",
                 "shasum": ""
             },
             "type": "wordpress-plugin",
@@ -208,7 +204,7 @@
                 "backup",
                 "wordpress"
             ],
-            "time": "2015-05-27 17:43:45"
+            "time": "2015-06-01 08:10:13"
         },
         {
             "name": "pimple/pimple",
@@ -258,21 +254,20 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.6.8",
-            "target-dir": "Symfony/Component/EventDispatcher",
+            "version": "v2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02"
+                "reference": "687039686d0e923429ba6e958d0baa920cd5d458"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/672593bc4b0043a0acf91903bb75a1c82d8f2e02",
-                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/687039686d0e923429ba6e958d0baa920cd5d458",
+                "reference": "687039686d0e923429ba6e958d0baa920cd5d458",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.9"
             },
             "require-dev": {
                 "psr/log": "~1.0",
@@ -289,11 +284,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\EventDispatcher\\": ""
                 }
             },
@@ -313,7 +308,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-02 15:18:45"
+            "time": "2015-05-02 15:21:08"
         }
     ],
     "packages-dev": [],
