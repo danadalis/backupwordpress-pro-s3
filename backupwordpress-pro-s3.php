@@ -50,3 +50,18 @@ add_action( 'backupwordpress_loaded', function() {
 
 	require_once __DIR__ . '/inc/S3BackUpService.php';
 });
+
+// retrieve our license key from the DB
+$settings = get_site_option( $container['addon_settings_key'] );
+
+if ( isset( $settings['license_key'] ) ) {
+	// setup the updater
+	$edd_updater = new \HM\BackUpWordPress\PluginUpdater( 'https://bwp.hmn.md', __FILE__, array(
+			'version'   => $container['addon_version'],
+			'license'   => $settings['license_key'],
+			'item_name' => $container['edd_download_file_name'],
+			'author'    => 'Human Made Limited',
+			'url'       => home_url()
+		)
+	);
+}

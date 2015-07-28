@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7f5ba55e7e1979442d68867929a2ec57",
+    "hash": "e0ff45604ce947c73da1a36a62959396",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "2.8.10",
+            "version": "2.8.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2ee053239be2ad4cf020f3b5998f29b5302d82c9"
+                "reference": "5c9cd0d0da069ae556db2900d34c9140bb9166b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2ee053239be2ad4cf020f3b5998f29b5302d82c9",
-                "reference": "2ee053239be2ad4cf020f3b5998f29b5302d82c9",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/5c9cd0d0da069ae556db2900d34c9140bb9166b5",
+                "reference": "5c9cd0d0da069ae556db2900d34c9140bb9166b5",
                 "shasum": ""
             },
             "require": {
@@ -67,7 +67,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-06-11 23:48:44"
+            "time": "2015-07-24 00:30:15"
         },
         {
             "name": "guzzle/guzzle",
@@ -170,12 +170,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/humanmade/BackUpWordPress-Common.git",
-                "reference": "a2fe3c56006442b8dd35d1633a964b80daa37293"
+                "reference": "d75677b2ca9d1d10481562320e375cb78557d36f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/a2fe3c56006442b8dd35d1633a964b80daa37293",
-                "reference": "a2fe3c56006442b8dd35d1633a964b80daa37293",
+                "url": "https://api.github.com/repos/humanmade/BackUpWordPress-Common/zipball/d75677b2ca9d1d10481562320e375cb78557d36f",
+                "reference": "d75677b2ca9d1d10481562320e375cb78557d36f",
                 "shasum": ""
             },
             "type": "wordpress-plugin",
@@ -204,7 +204,7 @@
                 "backup",
                 "wordpress"
             ],
-            "time": "2015-06-18 08:55:10"
+            "time": "2015-07-28 14:17:54"
         },
         {
             "name": "pimple/pimple",
@@ -254,16 +254,16 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.7.1",
+            "version": "v2.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "be3c5ff8d503c46768aeb78ce6333051aa6f26d9"
+                "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/be3c5ff8d503c46768aeb78ce6333051aa6f26d9",
-                "reference": "be3c5ff8d503c46768aeb78ce6333051aa6f26d9",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
+                "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
                 "shasum": ""
             },
             "require": {
@@ -308,7 +308,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-06-18 19:21:56"
         }
     ],
     "packages-dev": [],
