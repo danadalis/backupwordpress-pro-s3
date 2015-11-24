@@ -49,10 +49,11 @@ class S3BackUpService extends Service {
 			} else {
 				$secret = $this->get_field_value( 'secret_key' );
 
-				if ( defined( 'HMBKP_AWS_REGION' ) )
+				if ( defined( 'HMBKP_AWS_REGION' ) ) {
 					$region = HMBKP_AWS_REGION;
-				else
+				} else {
 					$region = $this->get_field_value( 'aws_region' );
+				}
 			}
 
 			if ( defined( 'HMBKP_AWS_BUCKET' ) ) {
@@ -97,13 +98,13 @@ class S3BackUpService extends Service {
 			'Metadata'   => array(
 				'Foo' => 'abc',
 				'Baz' => '123',
-			)
+			),
 		));
 
 		// We can poll the object until it is accessible
 		$this->s3->waitUntilObjectExists(array(
 			'Bucket' => $bucket_parts['bucket'],
-			'Key'    => $filename
+			'Key'    => $filename,
 		));
 
 	}
@@ -123,7 +124,7 @@ class S3BackUpService extends Service {
 
 		$iterator = $this->s3->getIterator('ListObjects', array(
 			'Bucket' => $bucket['bucket'],
-			'Prefix' => $bucket['prefix']
+			'Prefix' => $bucket['prefix'],
 		));
 
 		$response = $iterator->toArray();
@@ -146,7 +147,7 @@ class S3BackUpService extends Service {
 			try {
 				$response = $this->s3->deleteObject( array(
 					'Bucket' => $bucket['bucket'],
-					'Key'    => $filename
+					'Key'    => $filename,
 				) );
 			} catch( \Exception $e ) {
 				trigger_error( 'Failed to delete file from S3: ' . $e->getMessage() );
@@ -207,7 +208,7 @@ class S3BackUpService extends Service {
 
 		return array(
 			'bucket' => substr( $bucket, 0, $pos ),
-			'prefix' => substr( $bucket, $pos + 1 ) . '/'
+			'prefix' => substr( $bucket, $pos + 1 ) . '/',
 		);
 	}
 
@@ -362,9 +363,14 @@ class S3BackUpService extends Service {
 						<option <?php selected( $region, 'eu-west-1' ); ?>
 							value="eu-west-1"><?php _e( 'EU (Ireland) Region', 'backupwordpress' ); ?></option>
 
+						<option <?php selected( $region, 'eu-central-1' ); ?>
+							value="eu-central-1"><?php _e( 'EU (Frankfurt) Region', 'backupwordpress' ); ?></option>
+
 						<option <?php selected( $region, 'ap-southeast-1' ); ?> value="ap-southeast-1"><?php _e( 'Asia Pacific (Singapore) Region', 'backupwordpress' ); ?></option>
 
 						<option <?php selected( $region, 'ap-southeast-2' ); ?> value="ap-southeast-2"><?php _e( 'Asia Pacific (Sydney) Region', 'backupwordpress' ); ?></option>
+
+						<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress' ); ?></option>
 
 						<option <?php selected( $region, 'ap-northeast-1' ); ?> value="ap-northeast-1"><?php _e( 'Asia Pacific (Tokyo) Region', 'backupwordpress' ); ?></option>
 
