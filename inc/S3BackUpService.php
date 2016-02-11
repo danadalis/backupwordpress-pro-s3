@@ -48,12 +48,12 @@ class S3BackUpService extends Service {
 				$secret = HMBKP_AWS_SECRET_KEY;
 			} else {
 				$secret = $this->get_field_value( 'secret_key' );
-
-				if ( defined( 'HMBKP_AWS_REGION' ) ) {
-					$region = HMBKP_AWS_REGION;
-				} else {
-					$region = $this->get_field_value( 'aws_region' );
-				}
+			}
+			
+			if ( defined( 'HMBKP_AWS_REGION' ) ) {
+				$region = HMBKP_AWS_REGION;
+			} else {
+				$region = $this->get_field_value( 'aws_region' );
 			}
 
 			if ( defined( 'HMBKP_AWS_BUCKET' ) ) {
