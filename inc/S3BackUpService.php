@@ -61,6 +61,12 @@ class S3BackUpService extends Service {
 			} else {
 				$bucket = $this->get_field_value( 'bucket' );
 			}
+			
+			if ( defined( 'HMBKP_AWS_STORAGE_CLASS' ) ) {
+				$storage_class = HMBKP_AWS_STORAGE_CLASS;
+			} else {
+				$storage_class = $this->get_field_value( 'aws_storage_class' );
+			}
 
 			$this->fetch_s3_connection( $key, $secret, $region );
 
@@ -68,7 +74,7 @@ class S3BackUpService extends Service {
 
 				$this->schedule->set_status( __( 'Uploading to Amazon S3', 'backupwordpress' ) );
 
-				$this->upload_backup( $file, $bucket );
+				$this->upload_backup( $file, $bucket, $storage_class );
 
 				$this->delete_old_backups( $bucket );
 
@@ -83,7 +89,7 @@ class S3BackUpService extends Service {
 	 * @param $file
 	 * @param $bucket
 	 */
-	protected function upload_backup( $file, $bucket ) {
+	protected function upload_backup( $file, $bucket, $storage_class ) {
 
 		$bucket_parts = $this->parse_bucket_name( $bucket );
 		$filename = $bucket_parts['prefix'] . pathinfo( $file, PATHINFO_BASENAME );
@@ -95,6 +101,7 @@ class S3BackUpService extends Service {
 			'Bucket'     => $bucket_parts['bucket'],
 			'Key'        => $filename,
 			'SourceFile' => $file,
+			'StorageClass' => $storage_class,
 			'Metadata'   => array(
 				'Foo' => 'abc',
 				'Baz' => '123',
@@ -381,6 +388,43 @@ class S3BackUpService extends Service {
 				</td>
 
 			</tr>
+			<tr>
+
+				<th scope="row">
+
+					<label for="<?php echo $this->get_field_name( 'aws_storage_class' ); ?>"><?php _e( 'Storage Class', 'backupwordpress' ); ?></label>
+
+				</th>
+
+				<?php
+
+				$storage_class = $this->get_field_value( 'aws_storage_class' );
+
+				// set a default value if none is set
+				if ( empty( $storage_class ) ) {
+					$storage_class = 'STANDARD';
+				}
+
+				?>
+
+				<td>
+
+					<select name="<?php echo $this->get_field_name( 'aws_storage_class' ); ?>" id="<?php echo $this->get_field_name( 'aws_storage_class' ); ?>">
+
+						<option <?php selected( $storage_class, 'STANDARD' ); ?> value="STANDARD"><?php _e( 'Standard', 'backupwordpress' ); ?></option>
+							
+						<option <?php selected( $storage_class, 'STANDARD_IA' ); ?> value="STANDARD_IA"><?php _e( 'Standard - Infrequent Access ', 'backupwordpress' ); ?></option>
+
+						<option <?php selected( $storage_class, 'REDUCED_REDUNDANCY' ); ?> value="REDUCED_REDUNDANCY"><?php _e( 'Reduced Redundancy', 'backupwordpress' ); ?></option>
+						
+						
+						
+
+					</select>
+
+				</td>
+
+			</tr>
 
 			<tr>
 
@@ -433,6 +477,21 @@ class S3BackUpService extends Service {
 		</tr>
 
 		<tr<?php if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) { ?> class="hmbkp_active"<?php } ?>>
+
+			<td><code>HMBKP_AWS_SECRET_KEY</code></td>
+
+			<td>
+
+				<?php if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) { ?>
+			<p><?php printf( __( 'You\'ve set it to: %s', 'hmbkp' ), '<code>' . HMBKP_AWS_SECRET_KEY . '</code>' ); ?></p>
+		<?php } ?>
+
+				<p><?php _e( 'Your Amazon S3 Secret Key', 'backupwordpress-aws' ); ?> <?php _e( 'e.g.', 'backupwordpress-aws' ); ?>
+					<code>YOUR_AWS_SECRET_KEY</code></p>
+			</td>
+
+		</tr>
+				<tr<?php if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) { ?> class="hmbkp_active"<?php } ?>>
 
 			<td><code>HMBKP_AWS_SECRET_KEY</code></td>
 
