@@ -491,21 +491,6 @@ class S3BackUpService extends Service {
 			</td>
 
 		</tr>
-				<tr<?php if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) { ?> class="hmbkp_active"<?php } ?>>
-
-			<td><code>HMBKP_AWS_SECRET_KEY</code></td>
-
-			<td>
-
-				<?php if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) { ?>
-			<p><?php printf( __( 'You\'ve set it to: %s', 'hmbkp' ), '<code>' . HMBKP_AWS_SECRET_KEY . '</code>' ); ?></p>
-		<?php } ?>
-
-				<p><?php _e( 'Your Amazon S3 Secret Key', 'backupwordpress-aws' ); ?> <?php _e( 'e.g.', 'backupwordpress-aws' ); ?>
-					<code>YOUR_AWS_SECRET_KEY</code></p>
-			</td>
-
-		</tr>
 
 		</tbody>
 		</table>
