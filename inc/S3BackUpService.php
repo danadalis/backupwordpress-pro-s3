@@ -37,7 +37,7 @@ class S3BackUpService extends Service {
 
 		if ( ( 'hmbkp_backup_complete' === $action ) && $this->get_field_value( 'S3' ) ) {
 
-			$file = $backup->get_archive_filepath();
+			$file = $backup->get_backup_filepath();
 
 			if ( defined( 'HMBKP_AWS_ACCESS_KEY' ) ) {
 				$key = HMBKP_AWS_ACCESS_KEY;
@@ -72,14 +72,14 @@ class S3BackUpService extends Service {
 
 			if ( ! empty( $this->s3 ) ) {
 
-				$this->schedule->set_status( __( 'Uploading to Amazon S3', 'backupwordpress' ) );
+				$this->schedule->status->set_status( __( 'Uploading to Amazon S3', 'backupwordpress' ) );
 
 				$this->upload_backup( $file, $bucket, $storage_class );
 
 				$this->delete_old_backups( $bucket );
 
 			} else {
-				$backup->error( 'S3', sprintf( __( 'Could not connect to %s', 'backupwordpress' ), $this->get_field_value( 'bucket' ) ) );
+				$backup->warning( 'S3', sprintf( __( 'Could not connect to %s', 'backupwordpress' ), $this->get_field_value( 'bucket' ) ) );
 			}
 		}
 
