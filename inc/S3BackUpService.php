@@ -49,7 +49,7 @@ class S3BackUpService extends Service {
 			} else {
 				$secret = $this->get_field_value( 'secret_key' );
 			}
-			
+
 			if ( defined( 'HMBKP_AWS_REGION' ) ) {
 				$region = HMBKP_AWS_REGION;
 			} else {
@@ -61,7 +61,7 @@ class S3BackUpService extends Service {
 			} else {
 				$bucket = $this->get_field_value( 'bucket' );
 			}
-			
+
 			if ( defined( 'HMBKP_AWS_STORAGE_CLASS' ) ) {
 				$storage_class = HMBKP_AWS_STORAGE_CLASS;
 			} else {
@@ -412,13 +412,13 @@ class S3BackUpService extends Service {
 					<select name="<?php echo $this->get_field_name( 'aws_storage_class' ); ?>" id="<?php echo $this->get_field_name( 'aws_storage_class' ); ?>">
 
 						<option <?php selected( $storage_class, 'STANDARD' ); ?> value="STANDARD"><?php _e( 'Standard', 'backupwordpress' ); ?></option>
-							
+
 						<option <?php selected( $storage_class, 'STANDARD_IA' ); ?> value="STANDARD_IA"><?php _e( 'Standard - Infrequent Access ', 'backupwordpress' ); ?></option>
 
 						<option <?php selected( $storage_class, 'REDUCED_REDUNDANCY' ); ?> value="REDUCED_REDUNDANCY"><?php _e( 'Reduced Redundancy', 'backupwordpress' ); ?></option>
-						
-						
-						
+
+
+
 
 					</select>
 
@@ -478,7 +478,7 @@ class S3BackUpService extends Service {
 
 		<tr<?php if ( defined( 'HMBKP_AWS_SECRET_KEY' ) ) { ?> class="hmbkp_active"<?php } ?>>
 
-			<td><code>HMBKP_AWS_SECRET_KEY</code></td>
+			<td><code>define( 'HMBKP_AWS_ACCESS_KEY', 'xxxxxxxxxxxxxxx' );</code></td>
 
 			<td>
 
@@ -487,7 +487,7 @@ class S3BackUpService extends Service {
 		<?php } ?>
 
 				<p><?php _e( 'Your Amazon S3 Secret Key', 'backupwordpress-aws' ); ?> <?php _e( 'e.g.', 'backupwordpress-aws' ); ?>
-					<code>YOUR_AWS_SECRET_KEY</code></p>
+					<code>define( 'HMBKP_AWS_SECRET_KEY', 'xxxxxxxxxxxxxxx' );</code></p>
 			</td>
 
 		</tr>
